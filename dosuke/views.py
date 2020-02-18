@@ -5,24 +5,14 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
 
 from .models import Item
-from .filters import ItemFilter
 from .forms import ItemForm
 
 
 # Create your views here.
 # 検索一覧画面
-class ItemFilterView(LoginRequiredMixin, FilterView):
+class ItemView(LoginRequiredMixin, FilterView):
     model = Item
-    filterset_class = ItemFilter
-    # デフォルトの並び順を新しい順とする
-    # queryset = Item.objects.all().order_by('-created_at')
-
-    # クエリ未指定の時に全件検索を行うために以下のオプションを指定（django-filter2.0以降）
-    strict = False
-
-    # 1ページあたりの表示件数
-    paginate_by = 10
-
+    
     # 検索条件をセッションに保存する or 呼び出す
     def get(self, request, **kwargs):
         if request.GET:
