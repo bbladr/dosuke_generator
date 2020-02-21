@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dosuke',
     'django_filters',
+    'django_mysql',
 ]
 
 MIDDLEWARE = [
