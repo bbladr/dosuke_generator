@@ -4,14 +4,14 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
 
-from .models import Item
+from .models import Item, Event
 from .forms import ItemForm
 
 
 # Create your views here.
 # 検索一覧画面
-class ItemView(LoginRequiredMixin, FilterView):
-    model = Item
+class EventView(LoginRequiredMixin, FilterView):
+    model = Event
     
     # 検索条件をセッションに保存する or 呼び出す
     def get(self, request, **kwargs):
