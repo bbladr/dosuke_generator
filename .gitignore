@@ -1,4 +1,9 @@
-*.pyc
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
 
-dosuke/__pychache__/*
-Dosuke_pro/__pychache__/*
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
