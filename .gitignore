@@ -1,1 +1,4 @@
 *.pyc
+
+dosuke/__pychache__/*
+Dosuke_pro/__pychache__/*
