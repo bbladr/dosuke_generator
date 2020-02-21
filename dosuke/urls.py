@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import ItemView, ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView
+from .views import EventView, ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView
 
 
 urlpatterns = [
     # 一覧画面
-    path('',  ItemView.as_view(), name='index'),
+    path('',  EventView.as_view(), name='index'),
     # 詳細画面
     path('detail/<int:pk>/', ItemDetailView.as_view(), name='detail'),
     # 登録画面
