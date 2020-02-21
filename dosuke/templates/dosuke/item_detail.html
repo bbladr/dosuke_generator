@@ -1,17 +1,12 @@
 {% extends "./_base.html" %}
 {% block content %}
 <div class="container">
-    <h2 class="text-center">詳細表示</h2>
-    <div class="row">
-        <div class="col-12">
-            <a class="btn btn-outline-secondary float-right" href="{% url 'index' %}">戻る</a>
-        </div>
-    </div>
-    <!--  -->
+    <h2 class="text-center">イベント詳細</h2>
     {% include "./item_card.html" %}
     <div class="row">
         <div class="col-12">
-            <a class="btn btn-outline-secondary float-right" href="{% url 'index' %}">戻る</a>
+            <a class="btn btn-outline-secondary float-left" href="{% url 'index' %}">戻る</a>
+            <a class="btn btn-outline-secondary float-right" href="{% url 'index' %}">スケジュールを生成</a>
         </div>
     </div>
 </div>
