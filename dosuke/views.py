@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.viewsets import ModelViewSet
+
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -6,7 +8,7 @@ from django_filters.views import FilterView
 
 from .models import Item, Event
 from .forms import ItemForm
-
+from .serializers import EventSerializer
 
 # Create your views here.
 # 検索一覧画面
@@ -49,3 +51,7 @@ class ItemUpdateView(LoginRequiredMixin, UpdateView):
 class ItemDeleteView(LoginRequiredMixin, DeleteView):
     model = Item
     success_url = reverse_lazy('index')
+
+class EventViewSet(ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer

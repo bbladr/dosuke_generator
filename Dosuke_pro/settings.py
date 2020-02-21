@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'dosuke',
     'django_filters',
     'django_mysql',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
