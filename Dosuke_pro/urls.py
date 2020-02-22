@@ -19,6 +19,5 @@ from django.conf.urls import include, url
  
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # url(r'^dosuke/', include('dosuke.urls')),
     path('', include('dosuke.urls')),
 ]
