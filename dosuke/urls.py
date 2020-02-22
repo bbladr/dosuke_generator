@@ -1,6 +1,11 @@
 from django.urls import path
-from .views import EventView, ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView
+from django.conf.urls import include, url
+from rest_framework.routers import DefaultRouter
+from django.views.generic import RedirectView
+from .views import EventView, ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView, EventViewSet
 
+router = DefaultRouter()
+router.register(r'Events', EventViewSet)
 
 urlpatterns = [
     # 一覧画面
@@ -13,4 +18,8 @@ urlpatterns = [
     path('update/<int:pk>/', ItemUpdateView.as_view(), name='update'),
     # 削除画面
     path('delete/<int:pk>/', ItemDeleteView.as_view(), name='delete'),
+    # api
+    url(r'^api/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url('redirect/', RedirectView.as_view(url='/static/html/index.html')),
 ]
