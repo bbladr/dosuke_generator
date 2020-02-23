@@ -1,37 +1,30 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from rest_framework.viewsets import ModelViewSet
 
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
 
 from .models import Item, Event
 from .forms import ItemForm
-from .serializers import EventSerializer
+from .functions import getTimetable
 
 # Create your views here.
 # 検索一覧画面
 class EventView(LoginRequiredMixin, FilterView):
     model = Event
     
-    # 検索条件をセッションに保存する or 呼び出す
     def get(self, request, **kwargs):
-        if request.GET:
-            request.session['query'] = request.GET
-        else:
-            request.GET = request.GET.copy()
-            if 'query' in request.session.keys():
-                for key in request.session['query'].keys():
-                    request.GET[key] = request.session['query'][key]
-
+        print('print!')
         return super().get(request, **kwargs)
 
-
 # 詳細画面
-class ItemDetailView(LoginRequiredMixin, DetailView):
-    model = Item
+class EventDetailView(LoginRequiredMixin, DetailView):
+    model = Event
 
+    def get(self, request, **kwargs):
+        print('Event!')
+        return super().get(request, **kwargs)
 
 # 登録画面
 class ItemCreateView(LoginRequiredMixin, CreateView):
@@ -52,6 +45,13 @@ class ItemDeleteView(LoginRequiredMixin, DeleteView):
     model = Item
     success_url = reverse_lazy('index')
 
-class EventViewSet(ModelViewSet):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
+
+# 生成結果画面
+class EventGenerateView(TemplateView):
+    model = Event
+    template_name = "dosuke/result.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['message'] = getTimetable()
+        return context
