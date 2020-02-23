@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from .models import Event
+from .models import Event, Band
 from .forms import EventForm
 from .functions import getTimetable, getTimeLavel
 
@@ -11,10 +11,16 @@ from .functions import getTimetable, getTimeLavel
 # イベント一覧画面
 class EventListView(LoginRequiredMixin, ListView):
     model = Event
-    
+
 # イベント詳細画面
 class EventDetailView(LoginRequiredMixin, DetailView):
     model = Event
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bands'] = Band.objects.filter(event__name=context['event']).all()
+        return context
+
 
 # イベント作成画面
 class EventCreateView(LoginRequiredMixin, CreateView):

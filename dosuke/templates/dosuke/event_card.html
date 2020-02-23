@@ -1,16 +1,17 @@
-<div class="row">
-  <div class="col-3">
-      <p>イベント名</p>
-  </div>
-  <div class="col-9">
-      <p>{{ event.name }}</p>
+<div class="row my-4">
+  <div class="col-12">
+      <h2>{{ event.name }}</h2>
   </div>
 </div>
 <div class="row">
   <div class="col-3">
-      <p>バンド</p>
+    <p>バンド</p>
   </div>
-      <p>ここにバンドを表示</p>
+  <div class="col-9">
+    {% for band in bands %}
+      <!-- <a href="{% url 'index' %}">{{ band }}</a> -->
+      <p>{{ band }}</p>
+    {% endfor %}
   </div>
 </div>
 <div class="row">

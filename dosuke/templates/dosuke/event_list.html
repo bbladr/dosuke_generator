@@ -1,10 +1,10 @@
 {% extends "./_base.html" %}
 {% block content %} 
 <div class="container">
-    <div class="row">
+    <div class="row my-4">
         <div class="col-12">
             <div class="float-right">
-                <a class="btn btn-outline-secondary" href="{% url 'create' %}">Add new set</a>
+                <a class="btn btn-outline-secondary" href="{% url 'create' %}">イベント作成</a>
             </div>
         </div>
     </div>
@@ -13,35 +13,18 @@
         <div class="col-12">
             <ul class="list-group">
                 {% for event in event_list %}
-                <li class="list-group-event">
-                    <div class="row">
-                        <div class="col-3">
-                            <p>イベント</p>
-                        </div>
-                        <div class="col-9">
-                            <p>{{ event.name }}</p>
-                        </div>
+                <li class="list-group-item">
+                    <div class="float-left">
+                        <p>{{ event.name }}</p>
                     </div>
-                    <div class="row">
-                        <div class="col-3">
-                            <p>バンド</p>
-                        </div>
-                        <div class="col-9">
-                            <p>{{event.band_list}}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="float-right">
-                                <a class="btn btn-outline-secondary " href="{% url 'detail' event.pk %}">detail</a>
-                                <a class="btn btn-outline-secondary " href="{% url 'update' event.pk %}">Edit</a>
-                                <a class="btn btn-outline-secondary " href="{% url 'delete' event.pk %}">Delete</a>
-                            </div>
-                        </div>
+                    <div class="float-right">
+                        <a class="btn btn-outline-secondary " href="{% url 'detail' event.pk %}">選択</a>
+                        <a class="btn btn-outline-secondary " href="{% url 'update' event.pk %}">編集</a>
+                        <a class="btn btn-outline-secondary " href="{% url 'delete' event.pk %}">削除</a>
                     </div>
                 </li>
                 {% empty %}
-                <li class="list-group-event">
+                <li class="list-group-item">
                     対象のデータがありません
                 </li>
                 {% endfor %}

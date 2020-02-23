@@ -1,12 +1,16 @@
 {% extends "./_base.html" %}
 {% block content %}
 <div class="container">
-    <h2 class="text-center">イベント詳細</h2>
     {% include "./event_card.html" %}
     <div class="row">
         <div class="col-12">
-            <a class="btn btn-outline-secondary float-left" href="{% url 'index' %}">戻る</a>
-            <a class="btn btn-outline-secondary float-right" href="{% url 'generate' event.pk %}">スケジュールを生成</a>
+            <div class="float-left">
+                <a class="btn btn-outline-secondary" href="{% url 'update' event.pk %}">編集</a>
+                <a class="btn btn-outline-secondary" href="{% url 'generate' event.pk %}">スケジュールを生成</a>
+            </div>
+            <div class="float-right">
+                <a class="btn btn-outline-secondary" href="{% url 'event_list' %}">戻る</a>
+            </div>
         </div>
     </div>
 </div>
