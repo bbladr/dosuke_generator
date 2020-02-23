@@ -1,9 +1,5 @@
 from django.contrib import admin
-from .models import Item, Event
-
-@admin.register(Item)
-class ItemAdmin(admin.ModelAdmin):
-    pass
+from .models import Event
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):

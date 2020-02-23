@@ -1,49 +1,37 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django_filters.views import FilterView
 
-from .models import Item, Event
-from .forms import ItemForm
+from .models import Event
+from .forms import EventForm
 from .functions import getTimetable, getTimeLavel
 
 # Create your views here.
-# 検索一覧画面
-class EventView(LoginRequiredMixin, FilterView):
+# イベント一覧画面
+class EventListView(LoginRequiredMixin, ListView):
     model = Event
     
-    def get(self, request, **kwargs):
-        print('print!')
-        return super().get(request, **kwargs)
-
-# 詳細画面
+# イベント詳細画面
 class EventDetailView(LoginRequiredMixin, DetailView):
     model = Event
 
-    def get(self, request, **kwargs):
-        print('Event!')
-        return super().get(request, **kwargs)
+# イベント作成画面
+class EventCreateView(LoginRequiredMixin, CreateView):
+    model = Event
+    form_class = EventForm
+    success_url = "/"
 
-# 登録画面
-class ItemCreateView(LoginRequiredMixin, CreateView):
-    model = Item
-    form_class = ItemForm
-    success_url = reverse_lazy('index')
+# イベント更新画面
+class EventUpdateView(LoginRequiredMixin, UpdateView):
+    model = Event
+    form_class = EventForm
+    success_url = "/"
 
-
-# 更新画面
-class ItemUpdateView(LoginRequiredMixin, UpdateView):
-    model = Item
-    form_class = ItemForm
-    success_url = reverse_lazy('index')
-
-
-# 削除画面
-class ItemDeleteView(LoginRequiredMixin, DeleteView):
-    model = Item
-    success_url = reverse_lazy('index')
+# イベント削除画面
+class EventDeleteView(LoginRequiredMixin, DeleteView):
+    model = Event
+    success_url = "/"
 
 
 # 生成結果画面
