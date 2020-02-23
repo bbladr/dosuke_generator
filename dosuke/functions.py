@@ -1,11 +1,7 @@
 def getTimetable():
   import pandas as pd
-  # from numpy.linalg import solve
   import random
-  # import itertools
   from datetime import date
-  # from operator import itemgetter
-
 
   # 学年設定用に現在の年度を算出
   today = date.today()
@@ -368,4 +364,6 @@ def getTimetable():
       timetables.append(timetable)
                   
   return timetables
-                  
+
+def getTimeLavel():
+  return [f'{(18+i)//2}:{(i%2)*3}0~{(18+i+1)//2}:{((i+1)%2)*3}0' for i in range(27)]

@@ -3,7 +3,28 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            {{ message }}
+            <div class="row">
+                {% for timetable in timetables %}
+                    <div class="col-3 my-2">
+                        <div class="row">
+                            <div class="col-4">
+                                {% for label in labels %}
+                                    <div class="text-left">
+                                        {{ label }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-8">
+                                {% for band in timetable|slice:"0:-1" %}
+                                    <div class="bg-warning text-center">
+                                        {{ band }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

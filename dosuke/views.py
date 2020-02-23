@@ -7,7 +7,7 @@ from django_filters.views import FilterView
 
 from .models import Item, Event
 from .forms import ItemForm
-from .functions import getTimetable
+from .functions import getTimetable, getTimeLavel
 
 # Create your views here.
 # 検索一覧画面
@@ -53,5 +53,6 @@ class EventGenerateView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['message'] = getTimetable()
+        context['timetables'] = getTimetable()
+        context['labels'] = getTimeLavel()
         return context
