@@ -5,9 +5,8 @@ class EventForm(forms.ModelForm):
 
   class Meta:
     model = Event
-    fields = ('name','band_list','memo')
+    fields = ('name','memo')
     widgets = {
                 'name': forms.TextInput(attrs={'placeholder':'イベント名'}),
-                'band_list': forms.TextInput(attrs={'rows':4}),
                 'memo': forms.Textarea(attrs={'rows':4}),
               }

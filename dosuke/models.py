@@ -1,18 +1,11 @@
 from django.db import models
 from django.core import validators
-from django_mysql.models import ListCharField
 
 class Event(models.Model):
 
     name = models.CharField(
         verbose_name='Name',
         max_length=20,
-    )
-
-    band_list = ListCharField(
-        base_field=models.CharField(max_length=10),
-        size=6,
-        max_length=(6 * 11) 
     )
 
     memo = models.TextField(
@@ -30,57 +23,59 @@ class Event(models.Model):
         verbose_name = 'Event'
         verbose_name_plural = 'Event'
 
-# TODO バンドモデル、メンバーモデルを作成し、OneHasMany 関係にする
-# class Band(models.Model):
+class Band(models.Model):
 
-#     name = models.CharField(
-#         verbose_name='Name',
-#         max_length=20,
-#     )
+    name = models.CharField(
+        verbose_name='Name',
+        max_length=20,
+    )
 
-#     member_list = ListCharField(
-#         base_field=models.CharField(max_length=10),
-#         max_length=30,
-#     )
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
-#     memo = models.TextField(
-#         verbose_name='description',
-#         max_length=300,
-#         blank=True,
-#         null=True,
-#     )
+    memo = models.TextField(
+        verbose_name='description',
+        max_length=300,
+        blank=True,
+        null=True,
+    )
 
-    # # 以下は管理サイト上の表示設定
-    # def __str__(self):
-    #     return self.name
+    # 以下は管理サイト上の表示設定
+    def __str__(self):
+        return self.name
 
-    # class Meta:
-    #     verbose_name = 'Band'
-    #     verbose_name_plural = 'Band'
+    class Meta:
+        verbose_name = 'Band'
+        verbose_name_plural = 'Band'
 
-# class Member(models.Model):
+class Member(models.Model):
 
-#     name = models.CharField(
-#         verbose_name='Name',
-#         max_length=20,
-#     )
+    name = models.CharField(
+        verbose_name='Name',
+        max_length=20,
+    )
 
-#     entry_year = models.IntegerField(
-#         verbose_name='entry_year',
-#         validators=[validators.MinValueValidator(1)],
-#     )
+    entry_year = models.IntegerField(
+        verbose_name='entry_year',
+        validators=[validators.MinValueValidator(2000)],
+    )
 
-#     memo = models.TextField(
-#         verbose_name='description',
-#         max_length=300,
-#         blank=True,
-#         null=True,
-#     )
+    band  = models.ManyToManyField(Band)
 
-    # # 以下は管理サイト上の表示設定
-    # def __str__(self):
-    #     return self.name
+    memo = models.TextField(
+        verbose_name='description',
+        max_length=300,
+        blank=True,
+        null=True,
+    )
 
-    # class Meta:
-    #     verbose_name = 'Member'
-    #     verbose_name_plural = 'Member'
+    # 以下は管理サイト上の表示設定
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Member'
+        verbose_name_plural = 'Member'
