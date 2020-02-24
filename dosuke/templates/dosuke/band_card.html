@@ -9,7 +9,9 @@
   </div>
   <div class="col-9">
     {% for member in members %}
-      <a href="{% url 'member_detail' member.pk %}">{{ member }}</a>
+      <div>
+        <a class="text-dark" href="{% url 'member_detail' member.pk %}">{{ member }}</a>
+      </div>
     {% endfor %}
   </div>
 </div>

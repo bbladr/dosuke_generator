@@ -13,6 +13,18 @@
 </div>
 <div class="row">
   <div class="col-3">
+      <p>バンド</p>
+  </div>
+  <div class="col-9">
+    {% for band in bands %}
+      <div>
+        <a class="text-dark" href="{% url 'band_detail' band.pk %}">{{ band }}</a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-3">
       <p>備考</p>
   </div>
   <div class="col-9">
