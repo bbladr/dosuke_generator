@@ -4,7 +4,7 @@
     <div class="row my-4">
         <div class="col-12">
             <div class="float-right">
-                <a class="btn btn-outline-secondary" href="{% url 'event_create' %}">イベント作成</a>
+                <a class="btn btn-outline-secondary" href="{% url 'band_create' %}">バンド作成</a>
             </div>
         </div>
     </div>
@@ -12,15 +12,15 @@
     <div class="row">
         <div class="col-12">
             <ul class="list-group">
-                {% for event in event_list %}
+                {% for band in band_list %}
                 <li class="list-group-item">
                     <div class="float-left">
-                        <p>{{ event.name }}</p>
+                        <p>{{ band.name }}</p>
                     </div>
                     <div class="float-right">
-                        <a class="btn btn-outline-secondary " href="{% url 'event_detail' event.pk %}">選択</a>
-                        <a class="btn btn-outline-secondary " href="{% url 'event_update' event.pk %}">編集</a>
-                        <a class="btn btn-outline-secondary " href="{% url 'event_delete' event.pk %}">削除</a>
+                        <a class="btn btn-outline-secondary " href="{% url 'band_detail' band.pk %}">選択</a>
+                        <a class="btn btn-outline-secondary " href="{% url 'band_update' band.pk %}">編集</a>
+                        <a class="btn btn-outline-secondary " href="{% url 'band_delete' band.pk %}">削除</a>
                     </div>
                 </li>
                 {% empty %}

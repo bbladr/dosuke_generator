@@ -1,0 +1,16 @@
+{% extends "./_base.html" %}
+{% block content %}
+<div class="container">
+    {% include "./member_card.html" %}
+    <div class="row">
+        <div class="col-12">
+            <div class="float-left">
+                <a class="btn btn-outline-secondary" href="{% url 'member_update' member.pk %}">編集</a>
+            </div>
+            <div class="float-right">
+                <a class="btn btn-outline-secondary" href="{% url 'member_list' %}">戻る</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "./_base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center">データ削除</h2>
+    <p>このデータを削除します。よろしいですか？</p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {% include "./band_card.html" %}
+        <div class="row">
+            <div class="col-12">
+                <div class="float-left">
+                    <input type="submit" class="btn btn-outline-secondary" value="削除" />
+                </div>
+                <div class="float-right">
+                    <a class="btn btn-outline-secondary" href="{% url 'band_list' %}">戻る</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
