@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.shortcuts import redirect
 
 from .models import Event, Band, Member
 from .forms import EventForm, BandForm, MemberForm
@@ -27,6 +28,12 @@ class EventCreateView(LoginRequiredMixin, CreateView):
     form_class = EventForm
     success_url = "/"
 
+    def post(self, request):
+        form = self.form_class(request.POST)
+        obj = form.save(commit=False)
+        obj.save()
+        return redirect('event_detail', pk=obj.pk)
+
 # イベント更新画面
 class EventUpdateView(LoginRequiredMixin, UpdateView):
     model = Event
@@ -40,13 +47,12 @@ class EventDeleteView(LoginRequiredMixin, DeleteView):
 
 # 生成結果画面
 class EventGenerateView(TemplateView):
-    model = Event
     template_name = "dosuke/result.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['timetables'] = getTimetable()
-        context['labels'] = getTimeLavel()
+        context['time_labels'] = getTimeLavel()
         return context
 
 
@@ -76,6 +82,12 @@ class BandUpdateView(LoginRequiredMixin, UpdateView):
     model = Band
     form_class = BandForm
     success_url = "/band/"
+    
+    def post(self, request):
+        form = self.form_class(request.POST)
+        obj = form.save(commit=False)
+        obj.save()
+        return redirect('event_detail', pk=obj.pk)
 
 # バンド削除画面
 class BandDeleteView(LoginRequiredMixin, DeleteView):
@@ -113,3 +125,20 @@ class MemberUpdateView(LoginRequiredMixin, UpdateView):
 class MemberDeleteView(LoginRequiredMixin, DeleteView):
     model = Member
     success_url = "/member/"
+
+
+class ScheduleView(LoginRequiredMixin, TemplateView):
+    template_name = "dosuke/schedule.html"
+    success_url = "/result"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bands'] = Band.objects.all()
+        context['time_labels'] = getTimeLavel()
+        return context
+
+    def post(self, request):
+        print(request.POST)
+        # obj = form.save(commit=False)
+        # obj.save()
+        return redirect('/')

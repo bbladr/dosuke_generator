@@ -3,15 +3,15 @@ from . import views
 
 urlpatterns = [
     # イベント一覧画面
-    path('',  views.EventListView.as_view(), name='event_list'),
+    path('event/',  views.EventListView.as_view(), name='event_list'),
     # イベント詳細画面
-    path('detail/<int:pk>/', views.EventDetailView.as_view(), name='event_detail'),
+    path('event/detail/<int:pk>/', views.EventDetailView.as_view(), name='event_detail'),
     # イベント作成画面
-    path('create/', views.EventCreateView.as_view(), name='event_create'),
+    path('event/create/', views.EventCreateView.as_view(), name='event_create'),
     # イベント更新画面
-    path('update/<int:pk>/', views.EventUpdateView.as_view(), name='event_update'),
+    path('event/update/<int:pk>/', views.EventUpdateView.as_view(), name='event_update'),
     # イベント削除画面
-    path('delete/<int:pk>/', views.EventDeleteView.as_view(), name='event_delete'),
+    path('event/delete/<int:pk>/', views.EventDeleteView.as_view(), name='event_delete'),
     # 生成結果画面
     path('generate/<int:pk>/', views.EventGenerateView.as_view(), name='generate'),
     # バンド一覧画面
@@ -34,4 +34,6 @@ urlpatterns = [
     path('member/update/<int:pk>/', views.MemberUpdateView.as_view(), name='member_update'),
     # メンバー削除画面
     path('member/delete/<int:pk>/', views.MemberDeleteView.as_view(), name='member_delete'),
+    # スケジュール入力画面
+    path('', views.ScheduleView.as_view(), name='schedule')
 ]

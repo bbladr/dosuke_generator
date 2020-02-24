@@ -366,4 +366,4 @@ def getTimetable():
   return timetables
 
 def getTimeLavel():
-  return [f'{(18+i)//2}:{(i%2)*3}0~{(18+i+1)//2}:{((i+1)%2)*3}0' for i in range(27)]
+  return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)]

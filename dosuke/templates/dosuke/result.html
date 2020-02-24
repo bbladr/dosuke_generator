@@ -1,5 +1,6 @@
 {% extends "./_base.html" %}
 {% block content %} 
+{{ event }}
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -8,7 +9,7 @@
                     <div class="col-3 my-2">
                         <div class="row">
                             <div class="col-4">
-                                {% for label in labels %}
+                                {% for label in time_labels %}
                                     <div class="text-left">
                                         {{ label }}
                                     </div>

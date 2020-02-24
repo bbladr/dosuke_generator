@@ -8,7 +8,7 @@ class EventForm(forms.ModelForm):
     fields = ('name','memo')
     widgets = {
                 'name': forms.TextInput(attrs={'placeholder':'イベント名'}),
-                'memo': forms.Textarea(attrs={'rows':4}),
+                'memo': forms.Textarea(attrs={'placeholder':'備考', 'rows':4}),
               }
 
 
@@ -19,7 +19,7 @@ class BandForm(forms.ModelForm):
     fields = ('name','memo')
     widgets = {
                 'name': forms.TextInput(attrs={'placeholder':'バンド名'}),
-                'memo': forms.Textarea(attrs={'rows':4}),
+                'memo': forms.Textarea(attrs={'placeholder':'備考', 'rows':4}),
               }
 
 
@@ -31,5 +31,5 @@ class MemberForm(forms.ModelForm):
     widgets = {
                 'name': forms.TextInput(attrs={'placeholder':'氏名'}),
                 'entry_yaer': forms.NumberInput(),
-                'memo': forms.Textarea(attrs={'rows':4}),
+                'memo': forms.Textarea(attrs={'placeholder':'備考', 'rows':4}),
               }

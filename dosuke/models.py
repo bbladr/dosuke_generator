@@ -9,7 +9,7 @@ class Event(models.Model):
     )
 
     memo = models.TextField(
-        verbose_name='description',
+        verbose_name='memo',
         max_length=300,
         blank=True,
         null=True,
@@ -37,7 +37,7 @@ class Band(models.Model):
     )
 
     memo = models.TextField(
-        verbose_name='description',
+        verbose_name='memo',
         max_length=300,
         blank=True,
         null=True,
@@ -66,7 +66,7 @@ class Member(models.Model):
     band  = models.ManyToManyField(Band)
 
     memo = models.TextField(
-        verbose_name='description',
+        verbose_name='memo',
         max_length=300,
         blank=True,
         null=True,
