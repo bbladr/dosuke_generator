@@ -4,46 +4,9 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import redirect
 
-from .models import Event, Band, Member
-from .forms import EventForm, BandForm, MemberForm
+from .models import Band, Member
+from .forms import BandForm, MemberForm
 from .functions import getTimetable, getTimeLavel
-
-### イベント
-# イベント一覧画面
-class EventListView(LoginRequiredMixin, ListView):
-    model = Event
-
-# イベント詳細画面
-class EventDetailView(LoginRequiredMixin, DetailView):
-    model = Event
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['bands'] = Band.objects.filter(event__name=context['event']).all()
-        return context
-
-# イベント作成画面
-class EventCreateView(LoginRequiredMixin, CreateView):
-    model = Event
-    form_class = EventForm
-    success_url = "/"
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        obj = form.save(commit=False)
-        obj.save()
-        return redirect('event_detail', pk=obj.pk)
-
-# イベント更新画面
-class EventUpdateView(LoginRequiredMixin, UpdateView):
-    model = Event
-    form_class = EventForm
-    success_url = "/"
-
-# イベント削除画面
-class EventDeleteView(LoginRequiredMixin, DeleteView):
-    model = Event
-    success_url = "/"
 
 # 生成結果画面
 class EventGenerateView(TemplateView):

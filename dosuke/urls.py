@@ -2,16 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # イベント一覧画面
-    path('event/',  views.EventListView.as_view(), name='event_list'),
-    # イベント詳細画面
-    path('event/detail/<int:pk>/', views.EventDetailView.as_view(), name='event_detail'),
-    # イベント作成画面
-    path('event/create/', views.EventCreateView.as_view(), name='event_create'),
-    # イベント更新画面
-    path('event/update/<int:pk>/', views.EventUpdateView.as_view(), name='event_update'),
-    # イベント削除画面
-    path('event/delete/<int:pk>/', views.EventDeleteView.as_view(), name='event_delete'),
     # 生成結果画面
     path('generate/<int:pk>/', views.EventGenerateView.as_view(), name='generate'),
     # バンド一覧画面

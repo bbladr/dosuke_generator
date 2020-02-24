@@ -1,9 +1,6 @@
 from django.contrib import admin
-from .models import Event, Band, Member
+from .models import Band, Member
 
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    pass
 @admin.register(Band)
 class BandAdmin(admin.ModelAdmin):
     pass

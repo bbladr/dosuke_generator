@@ -4,7 +4,7 @@
     <div class="row my-4">
         <div class="col-12">
             <div class="float-right">
-                <a class="btn btn-outline-secondary" href="{% url 'band_create' %}">バンド作成</a>
+                <a class="btn btn-outline-secondary" href="{% url 'band_create' %}">バンド追加</a>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
                         <p>{{ band.name }}</p>
                     </div>
                     <div class="float-right">
-                        <a class="btn btn-outline-secondary " href="{% url 'band_detail' band.pk %}">選択</a>
+                        <a class="btn btn-outline-secondary " href="{% url 'band_detail' band.pk %}">詳細</a>
                         <a class="btn btn-outline-secondary " href="{% url 'band_update' band.pk %}">編集</a>
                         <a class="btn btn-outline-secondary " href="{% url 'band_delete' band.pk %}">削除</a>
                     </div>

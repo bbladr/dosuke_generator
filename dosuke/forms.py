@@ -1,16 +1,5 @@
 from django import forms
-from .models import Event, Band, Member
-
-class EventForm(forms.ModelForm):
-
-  class Meta:
-    model = Event
-    fields = ('name','memo')
-    widgets = {
-                'name': forms.TextInput(attrs={'placeholder':'イベント名'}),
-                'memo': forms.Textarea(attrs={'placeholder':'備考', 'rows':4}),
-              }
-
+from .models import Band, Member
 
 class BandForm(forms.ModelForm):
 
