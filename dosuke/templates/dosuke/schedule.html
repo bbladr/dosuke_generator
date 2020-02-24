@@ -20,7 +20,7 @@
             ~
             <select id="{{ band }}_end" name="{{ band }}_end">
               {% for label in time_labels|slice:"1:" %}
-                <option value=" {{ forloop.counter0 }}" {% if label == '22:30' %}selected{% endif %}>{{ label }}</option>
+                <option value=" {{ forloop.counter }}" {% if label == '22:30' %}selected{% endif %}>{{ label }}</option>
               {% endfor %}
             </select>
           </div>
