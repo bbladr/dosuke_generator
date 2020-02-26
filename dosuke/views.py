@@ -8,17 +8,6 @@ from .models import Band, Member
 from .forms import BandForm, MemberForm
 from .functions import getTimetable, getTimeLavel
 
-# 生成結果画面
-class EventGenerateView(TemplateView):
-    template_name = "dosuke/result.html"
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['timetables'] = getTimetable()
-        context['time_labels'] = getTimeLavel()
-        return context
-
-
 ### バンド
 # バンド一覧画面
 class BandListView(LoginRequiredMixin, ListView):
@@ -40,6 +29,12 @@ class BandCreateView(LoginRequiredMixin, CreateView):
     form_class = BandForm
     success_url = "/band/"
 
+    def post(self, request):
+        form = self.form_class(request.POST)
+        obj = form.save(commit=False)
+        obj.save()
+        return redirect('band_detail', pk=obj.pk)
+
 # バンド更新画面
 class BandUpdateView(LoginRequiredMixin, UpdateView):
     model = Band
@@ -50,7 +45,7 @@ class BandUpdateView(LoginRequiredMixin, UpdateView):
         form = self.form_class(request.POST)
         obj = form.save(commit=False)
         obj.save()
-        return redirect('event_detail', pk=obj.pk)
+        return redirect('band_detail', pk=obj.pk)
 
 # バンド削除画面
 class BandDeleteView(LoginRequiredMixin, DeleteView):
@@ -89,9 +84,9 @@ class MemberDeleteView(LoginRequiredMixin, DeleteView):
     model = Member
     success_url = "/member/"
 
-
-class ScheduleView(LoginRequiredMixin, TemplateView):
-    template_name = "dosuke/schedule.html"
+# スケジュール入力画面
+class GenerateView(LoginRequiredMixin, TemplateView):
+    template_name = "dosuke/generate.html"
     success_url = "/result"
 
     def get_context_data(self, **kwargs):
@@ -100,8 +95,20 @@ class ScheduleView(LoginRequiredMixin, TemplateView):
         context['time_labels'] = getTimeLavel()
         return context
 
-    def post(self, request):
+# 生成結果画面
+class ResultView(TemplateView):
+    template_name = "dosuke/result.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['timetables'] = getTimetable()
+        context['time_labels'] = getTimeLavel()
+        return context
+
+    def post(self, request, **kwargs):
         print(request.POST)
-        # obj = form.save(commit=False)
-        # obj.save()
-        return redirect('/')
+        # return redirect('/result', timetable)
+        # context = super().get_context_data(**kwargs)
+        a = getTimetable()
+        b = getTimeLavel()
+        return redirect('result', {timetables:a, time_labels:b})

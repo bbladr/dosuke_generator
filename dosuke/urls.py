@@ -2,8 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # 生成結果画面
-    path('generate/<int:pk>/', views.EventGenerateView.as_view(), name='generate'),
     # バンド一覧画面
     path('band/',  views.BandListView.as_view(), name='band_list'),
     # バンド詳細画面
@@ -25,5 +23,7 @@ urlpatterns = [
     # メンバー削除画面
     path('member/delete/<int:pk>/', views.MemberDeleteView.as_view(), name='member_delete'),
     # スケジュール入力画面
-    path('', views.ScheduleView.as_view(), name='schedule')
+    path('', views.GenerateView.as_view(), name='generate'),
+    # 土スケ生成結果画面
+    path('result/', views.ResultView.as_view(), name='result'),
 ]
