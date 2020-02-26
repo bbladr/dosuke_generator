@@ -22,7 +22,6 @@ class BandDetailView(LoginRequiredMixin, DetailView):
         context['members'] = Member.objects.filter(band__name=context['band']).all()
         return context
 
-
 # バンド作成画面
 class BandCreateView(LoginRequiredMixin, CreateView):
     model = Band
