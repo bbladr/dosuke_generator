@@ -32,6 +32,11 @@ class BandCreateView(LoginRequiredMixin, CreateView):
         form = self.form_class(request.POST)
         obj = form.save(commit=False)
         obj.save()
+        # ManyToMany の場合これを追記しないと save されない
+        # see: https://qiita.com/tatamyiwathy/items/3ab83ab95c0ce62ede6e
+        form.save_m2m()
+
+        print(request.POST)
         return redirect('band_detail', pk=obj.pk)
 
 # バンド更新画面
@@ -44,6 +49,8 @@ class BandUpdateView(LoginRequiredMixin, UpdateView):
         form = self.form_class(request.POST)
         obj = form.save(commit=False)
         obj.save()
+        form.save_m2m()
+
         return redirect('band_detail', pk=obj.pk)
 
 # バンド削除画面
