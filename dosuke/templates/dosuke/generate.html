@@ -7,18 +7,18 @@
       <form action="result/" method="post">
         {% csrf_token %}
         {% for band in bands %}
-        <div class="row">
+        <div class="row mb-2">
           <div class="col-3">
             {{ band }}
           </div>
           <div class="col-6">
-            <select id="{{ band }}_start" name="{{ band }}_start">
+            <select id="{{ band }}_start" class="mr-2" name="{{ band }}_start">
               {% for label in time_labels|slice:":-1" %}
                 <option value=" {{ forloop.counter0 }}" {% if label == '9:00' %}selected{% endif %}>{{ label }}</option>
               {% endfor %}
             </select>
             ~
-            <select id="{{ band }}_end" name="{{ band }}_end">
+            <select id="{{ band }}_end" class="ml-2" name="{{ band }}_end">
               {% for label in time_labels|slice:"1:" %}
                 <option value=" {{ forloop.counter }}" {% if label == '22:30' %}selected{% endif %}>{{ label }}</option>
               {% endfor %}
@@ -26,7 +26,7 @@
           </div>
         </div>
         {% endfor %}
-        <input type="submit" class="btn btn-outline-secondary" value="土スケを生成">
+        <input type="submit" class="btn btn-outline-secondary mt-2" value="土スケを生成">
       </form>
     </div>
   </div>
