@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import redirect
+from django.urls import reverse
 
 from .models import Band, Member
 from .forms import BandForm, MemberForm
@@ -43,15 +44,11 @@ class BandCreateView(LoginRequiredMixin, CreateView):
 class BandUpdateView(LoginRequiredMixin, UpdateView):
     model = Band
     form_class = BandForm
-    success_url = "/band/"
-    
-    def post(self, request):
-        form = self.form_class(request.POST)
-        obj = form.save(commit=False)
-        obj.save()
-        form.save_m2m()
 
-        return redirect('band_detail', pk=obj.pk)
+    def get_success_url(self):
+        return reverse('band_detail', kwargs={
+            'pk': self.object.pk,
+        })
 
 # バンド削除画面
 class BandDeleteView(LoginRequiredMixin, DeleteView):
