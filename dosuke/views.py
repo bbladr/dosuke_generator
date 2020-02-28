@@ -109,6 +109,19 @@ class ResultView(TemplateView):
         params = {}
         for key in [key for key in request.GET if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
             params[key] = int(request.GET[key])
+        # params を降順ソートして
+        hoped_time_edges = {}
+        for key, value in sorted(params.items(), key=lambda x: x[0], reverse=True):
+            if re.search('_start', key):
+                band = key[:-6]
+                hoped_time_edges[band] = [value]
+            elif re.search('_end', key):
+                band = key[:-4]
+                if hoped_time_edges[band]:
+                    hoped_time_edges[band].append(value)
+            else:
+                continue
+        print(hoped_time_edges)
         context = {
             'timetables': [['a']],
             'time_labels': getTimeLavel()
