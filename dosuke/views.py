@@ -7,7 +7,9 @@ from django.urls import reverse
 
 from .models import Band, Member
 from .forms import BandForm, MemberForm
-from .functions import getTimetable, getTimeLavel
+from .functions import getTimetables, getTimeLavel
+
+import re
 
 ### バンド
 # バンド一覧画面
@@ -65,10 +67,9 @@ class MemberListView(LoginRequiredMixin, ListView):
 class MemberDetailView(LoginRequiredMixin, DetailView):
     model = Member
     
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['bands'] = Band.objects.filter(event__name=context['event']).all()
-    #     return context
+    def get_context_data(self, **kwargs):
+        # TODO 参加中のバンドを表示する
+        return context
 
 # メンバー作成画面
 class MemberCreateView(LoginRequiredMixin, CreateView):
@@ -102,16 +103,14 @@ class GenerateView(LoginRequiredMixin, TemplateView):
 class ResultView(TemplateView):
     template_name = "dosuke/result.html"
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['timetables'] = getTimetable()
-        context['time_labels'] = getTimeLavel()
-        return context
-
-    def post(self, request, **kwargs):
-        print(request.POST)
-        # return redirect('/result', timetable)
-        # context = super().get_context_data(**kwargs)
-        a = getTimetable()
-        b = getTimeLavel()
-        return redirect('result', {timetables:a, time_labels:b})
+    # TODO パスに param が入るのが単純にダサいので Result モデルを作るか、generate ページの POST で1ページに収めるかする
+    def get(self, request, **kwargs):
+        # まずは req から必要な値を抽出
+        params = {}
+        for key in [key for key in request.GET if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
+            params[key] = int(request.GET[key])
+        context = {
+            'timetables': [['a']],
+            'time_labels': getTimeLavel()
+        }
+        return self.render_to_response(context)
