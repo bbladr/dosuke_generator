@@ -1,4 +1,4 @@
-def getTimetables():
+def getTimetables(hope_times):
   import pandas as pd
   import random
   from datetime import date
