@@ -1,0 +1,33 @@
+::selection {
+  background-color: #fff;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+.form-check-label {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0px;
+  border-radius: 0px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.form-check-label:after {
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  display: block;
+  margin-top: -10px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #bbb;
+  border-radius: 6px;
+  content: '';
+}
+input[type=checkbox]:checked + .form-check-label:after {
+  background-color: orange;
+}

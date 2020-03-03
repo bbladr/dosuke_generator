@@ -4,27 +4,42 @@
   <div class="row my-4">
     <div class="col-12">
       <h2>希望時間入力画面</h2>
-      <form action="result/" method="get">
-        {% csrf_token %}
-        {% for band in bands %}
+      <form action="result/" method="post">
         <div class="row mb-2">
-          <div class="col-3">
-            {{ band }}
+          <div class="col-2 text-right">
+            時刻
           </div>
-          <div class="col-6">
-            <select id="{{ band }}_start" class="mr-2" name="{{ band }}_start">
-              {% for label in time_labels|slice:":-1" %}
-                <option value=" {{ forloop.counter0 }}" {% if label == '9:00' %}selected{% endif %}>{{ label }}</option>
+          <div class="col-8 d-flex justify-content-between">
+            {% with ''|center:14 as range %}
+              {% for _ in range %}
+                <div class="d-inline">{{ forloop.counter|add:"8" }}</div>
               {% endfor %}
-            </select>
-            ~
-            <select id="{{ band }}_end" class="ml-2" name="{{ band }}_end">
-              {% for label in time_labels|slice:"1:" %}
-                <option value=" {{ forloop.counter }}" {% if label == '22:30' %}selected{% endif %}>{{ label }}</option>
-              {% endfor %}
-            </select>
+            {% endwith %}
           </div>
         </div>
+        {% csrf_token %}
+        {% for band in bands %}
+          <div class="row mb-2">
+            <div class="col-2">
+              {{ band }}
+            </div>
+            <div class="col-8 d-flex justify-content-between">
+              {% with ''|center:27 as range %}
+                {% for _ in range %}
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input {{ band }}" type="checkbox" id="{{ band }}_{{ forloop.counter0 }}" name="{{ band }}_{{ forloop.counter0 }}">
+                    <label class="form-check-label {{ band }}" for="{{ band }}_{{ forloop.counter0 }}"></label>
+                  </div>
+                {% endfor %}
+              {% endwith %}
+            </div>
+            <div class="col-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}">全選択</button>
+            </div>
+            <div class="col-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}">全解除</button>
+            </div>
+          </div>
         {% endfor %}
         <input type="submit" class="btn btn-outline-secondary mt-2" value="土スケを生成">
       </form>

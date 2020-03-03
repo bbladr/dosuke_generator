@@ -103,27 +103,22 @@ class GenerateView(LoginRequiredMixin, TemplateView):
 class ResultView(TemplateView):
     template_name = "dosuke/result.html"
     
-    # TODO パスに param が入るのが単純にダサいので Result モデルを作るか、generate ページの POST で1ページに収めるかする
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         # まずは req から必要な値を抽出
         params = {}
-        for key in [key for key in request.GET if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
-            params[key] = int(request.GET[key])
-        # params を降順ソートして
-        hoped_time_edges = {}
-        for key, value in sorted(params.items(), key=lambda x: x[0], reverse=True):
-            if re.search('_start', key):
-                band = key[:-6]
-                hoped_time_edges[band] = [value]
-            elif re.search('_end', key):
-                band = key[:-4]
-                if hoped_time_edges[band]:
-                    hoped_time_edges[band].append(value)
+        for key in [key for key in request.POST if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
+            # アンダーバーを境目にバンド名とコマ番を取得
+            l = key.split('_')
+            band = l[0]
+            time = l[1]
+            if not band in params.keys():
+                params[band] = [time]
             else:
-                continue
-        print(hoped_time_edges)
+                params[band].append(time)
+
+        timetables = getTimetables(params)
         context = {
-            'timetables': [['a']],
+            'timetables': timetables,
             'time_labels': getTimeLavel()
         }
         return self.render_to_response(context)
