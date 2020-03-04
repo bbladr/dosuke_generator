@@ -110,9 +110,9 @@ class ResultView(TemplateView):
             # アンダーバーを境目にバンド名とコマ番を取得
             band, time = key.split('_')
             if not band in params.keys():
-                params[band] = [time]
+                params[band] = [int(time)]
             else:
-                params[band].append(time)
+                params[band].append(int(time))
 
         timetables = getTimetables(params)
         context = {
