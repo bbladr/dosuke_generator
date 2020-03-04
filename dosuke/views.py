@@ -108,9 +108,7 @@ class ResultView(TemplateView):
         params = {}
         for key in [key for key in request.POST if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
             # アンダーバーを境目にバンド名とコマ番を取得
-            l = key.split('_')
-            band = l[0]
-            time = l[1]
+            band, time = key.split('_')
             if not band in params.keys():
                 params[band] = [time]
             else:
