@@ -31,13 +31,3 @@ input[type=checkbox] {
 input[type=checkbox]:checked + .form-check-label:after {
   background-color: orange;
 }
-
-.band-block {
-  background-color: orange;
-}
-.band-block + .session-block {
-  background-color: red;
-}
-.band-block + .None-block {
-  background-color: lightgray;
-}

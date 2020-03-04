@@ -2,7 +2,7 @@
 {% block content %} 
 {{ event }}
 <div class="container">
-    <div class="row mt-2">
+    <div class="row mt-3">
         <div class="col-12">
             <h2>生成結果</h2>
             <div class="row mt-2">
@@ -18,9 +18,19 @@
                             </div>
                             <div class="col-8">
                                 {% for band in timetable|slice:"0:-1" %}
-                                    <div class="text-center band-block {{ band }}-block">
-                                        {{ band }}
-                                    </div>
+                                    {% if band == "session" %}
+                                        <div class="text-center bg-danger">
+                                            セッション
+                                        </div>
+                                    {% elif band == None %}
+                                        <div class="text-center bg-white">
+                                            なし
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center bg-warning">
+                                            {{ band }}
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </div>
