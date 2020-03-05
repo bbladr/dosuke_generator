@@ -4,8 +4,11 @@ from datetime import date
 import pandas as pd
 
     
-# TODO 配列より集合の方がいいかもしれない
-def get_timetables(hope_times):
+def get_timetables(data):
+
+    hope_times = {}
+    for band in set(data['band']):
+        hope_times[band] = list(data[(data['band'] == band) & (data['day'] == 1)]['hour'])
 
     # 防音室使用可能枠
     room_start = 0
@@ -246,7 +249,7 @@ def get_timetables(hope_times):
     return timetables
 
 
-def get_timeLavel():
+def get_time_lavel():
   return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)]
 
 

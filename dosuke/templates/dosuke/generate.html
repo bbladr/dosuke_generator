@@ -6,8 +6,13 @@
       <h2>希望時間入力画面</h2>
       <form action="result/" method="post">
         <div class="row mb-2">
+          <div class="col-12">
+            <input type="submit" class="btn btn-outline-secondary mt-2" value="土スケを生成">
+          </div>
+        </div>
+        <div class="row mb-2">
           <div class="col-2 text-right">
-            時刻
+            日時
           </div>
           <div class="col-8 d-flex justify-content-between">
             {% with ''|center:14 as range %}
@@ -19,27 +24,30 @@
         </div>
         {% csrf_token %}
         {% for band in bands %}
-          <div class="row mb-2">
-            <div class="col-2">
-              {{ band }}
-            </div>
-            <div class="col-8 d-flex justify-content-between">
-              {% with ''|center:27 as range %}
-                {% for _ in range %}
+          {% for day in '12345'|make_list %}
+            <div class="row mb-2">
+              <div class="col-1 text-right">
+                {{ band }}
+              </div>
+              <div class="col-1 text-right">
+                {{ day }}日目
+              </div>
+              <div class="col-8 d-flex justify-content-between">
+                {% for _ in ''|center:27 %}
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input {{ band }}" type="checkbox" id="{{ band }}_{{ forloop.counter0 }}" name="{{ band }}_{{ forloop.counter0 }}">
-                    <label class="form-check-label {{ band }}" for="{{ band }}_{{ forloop.counter0 }}"></label>
+                    <input class="form-check-input {{ band }}_{{ day }}" type="checkbox" id="{{ band }}_{{ day }}_{{ forloop.counter0 }}" name="{{ band }}_{{ day }}_{{ forloop.counter0 }}">
+                    <label class="form-check-label {{ band }}_{{ day }}" for="{{ band }}_{{ day }}_{{ forloop.counter0 }}"></label>
                   </div>
                 {% endfor %}
-              {% endwith %}
+              </div>
+              <div class="col-1">
+                <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}_{{ day }}">全選択</button>
+              </div>
+              <div class="col-1">
+                <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}_{{ day }}">全解除</button>
+              </div>
             </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}">全選択</button>
-            </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}">全解除</button>
-            </div>
-          </div>
+          {% endfor %}
         {% endfor %}
         <input type="submit" class="btn btn-outline-secondary mt-2" value="土スケを生成">
       </form>

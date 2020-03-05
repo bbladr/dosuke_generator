@@ -7,9 +7,10 @@ from django.urls import reverse
 
 from .models import Band, Member
 from .forms import BandForm, MemberForm
-from .functions import get_timetables, get_timeLavel, get_timetables_with_opt
+from .functions import get_timetables, get_time_lavel, get_timetables_with_opt
 
 import re
+import pandas as pd
 
 ### バンド
 # バンド一覧画面
@@ -96,7 +97,7 @@ class GenerateView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['bands'] = Band.objects.all()
-        context['time_labels'] = get_timeLavel()
+        context['time_labels'] = get_time_lavel()
         return context
 
 # 生成結果画面
@@ -105,18 +106,18 @@ class ResultView(TemplateView):
     
     def post(self, request, **kwargs):
         # まずは req から必要な値を抽出
-        params = {}
-        for key in [key for key in request.POST if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
-            # アンダーバーを境目にバンド名とコマ番を取得
-            band, time = key.split('_')
-            if not band in params.keys():
-                params[band] = [int(time)]
-            else:
-                params[band].append(int(time))
+        data_list = []
 
-        timetables = get_timetables(params)
+        for key in [key for key in request.POST if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
+            
+            # アンダーバーを境目にバンド名とコマ番を取得
+            band, day, time = key.split('_')
+            data_list.append([band, int(day), int(time)])
+
+        data = pd.DataFrame(data_list, columns=['band', 'day', 'hour'])
+
         context = {
-            'timetables': timetables,
-            'time_labels': getTimeLavel()
+            'timetables': get_timetables(data),
+            'time_labels': get_time_lavel()
         }
         return self.render_to_response(context)
