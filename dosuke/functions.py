@@ -6,10 +6,6 @@ import pandas as pd
     
 def get_timetables(data):
 
-    hope_times = {}
-    for band in set(data['band']):
-        hope_times[band] = list(data[(data['band'] == band) & (data['day'] == 1)]['hour'])
-
     # 防音室使用可能枠
     room_start = 0
     room_end = 27
@@ -26,13 +22,14 @@ def get_timetables(data):
     # とるコマの優先順
     frame_prim = [14,15,16,17,18,19,13,12,11,10,20,21,22,23,24,25,26,9,8,7,6,5,4,3,2,1,0]
 
-    # 案の数
-    N = 10
-    timetables = []
+    timetable_dict = {}
 
-    # 案を複数出す
-    for n in range(N):
-        
+    for day in set(data['day']):
+
+        hope_times = {}
+        for band in set(data['band']):
+            hope_times[band] = list(data[(data['band'] == band) & (data['day'] == day)]['hour'])
+
         # 練習枠の初期化
         timetable = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
         # 防音室利用可能時間の箇所を None (空)にする
@@ -244,9 +241,10 @@ def get_timetables(data):
                                 break
                         if isError == False:
                             timetable = tmp_table.copy()
-        timetables.append(timetable)
+
+        timetable_dict[day] = timetable
                     
-    return timetables
+    return timetable_dict
 
 
 def get_time_lavel():
@@ -254,5 +252,6 @@ def get_time_lavel():
 
 
 # 最適化問題を得方法
-def get_timetables_with_opt(hope_times):
-    return timetable
+def get_timetables_with_pulp(hope_times):
+    timetable_dict = {}
+    return timetable_dict

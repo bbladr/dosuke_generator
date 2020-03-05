@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from .models import Band, Member
 from .forms import BandForm, MemberForm
-from .functions import get_timetables, get_time_lavel, get_timetables_with_opt
+from .functions import get_timetables, get_time_lavel, get_timetables_with_pulp
 
 import re
 import pandas as pd
@@ -116,8 +116,11 @@ class ResultView(TemplateView):
 
         data = pd.DataFrame(data_list, columns=['band', 'day', 'hour'])
 
+        # timetable_dict = get_timetables_with_pulp(data)
+        timetable_dict = get_timetables(data)
+
         context = {
-            'timetables': get_timetables(data),
+            'timetable_dict': timetable_dict,
             'time_labels': get_time_lavel()
         }
         return self.render_to_response(context)

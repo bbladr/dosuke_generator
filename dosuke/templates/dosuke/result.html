@@ -6,10 +6,10 @@
         <div class="col-12">
             <h2>生成結果</h2>
             <div class="row mt-2">
-                {% for timetable in timetables %}
+                {% for key, timetable in timetable_dict.items %}
                     <div class="col-3 my-2">
                         <div class="card">
-                            <h5 class="card-header">結果{{ forloop.counter }}</h5>
+                            <h5 class="card-header">{{ key }}日目</h5>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-4">
