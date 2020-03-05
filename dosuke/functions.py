@@ -1,8 +1,11 @@
+import random
+from datetime import date
+
+import pandas as pd
+
+    
 # TODO 配列より集合の方がいいかもしれない
-def getTimetables(hope_times):
-    import pandas as pd
-    import random
-    from datetime import date
+def get_timetables(hope_times):
 
     # 防音室使用可能枠
     room_start = 0
@@ -15,20 +18,20 @@ def getTimetables(hope_times):
     session_frames = [i for i in range(session_start, session_end)]
 
     # 最大時間コマ数
-    len_max = 27
+    LEN_ALL_FRAME = 27
 
     # とるコマの優先順
     frame_prim = [14,15,16,17,18,19,13,12,11,10,20,21,22,23,24,25,26,9,8,7,6,5,4,3,2,1,0]
 
     # 案の数
-    N = 5
+    N = 10
     timetables = []
 
     # 案を複数出す
     for n in range(N):
         
         # 練習枠の初期化
-        timetable = [i for i in ['padding']*(len_max+1)]
+        timetable = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
         # 防音室利用可能時間の箇所を None (空)にする
         for i in room_frames:
             timetable[i] = None
@@ -57,7 +60,8 @@ def getTimetables(hope_times):
             for start in frame_prim_tmp:
                 
                 # 前者: 取ろうとしてる枠が希望時間内に含まれてるか、後者: その時間が空いてるか
-                if set(hope_times[band]) >= set(range(start, start + hoped_len)) and not(any(timetable[start:start+hoped_len])):
+                if set(hope_times[band]) >= set(range(start, start + hoped_len)) \
+                        and not(any(timetable[start:start+hoped_len])):
                     timetable[start:start+hoped_len] = [band]*hoped_len
                     # とったら次のバンド
                     isTrouble = False
@@ -241,5 +245,11 @@ def getTimetables(hope_times):
                     
     return timetables
 
-def getTimeLavel():
+
+def get_timeLavel():
   return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)]
+
+
+# 最適化問題を得方法
+def get_timetables_with_opt(hope_times):
+    return timetable

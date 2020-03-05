@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from .models import Band, Member
 from .forms import BandForm, MemberForm
-from .functions import getTimetables, getTimeLavel
+from .functions import get_timetables, get_timeLavel, get_timetables_with_opt
 
 import re
 
@@ -96,7 +96,7 @@ class GenerateView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['bands'] = Band.objects.all()
-        context['time_labels'] = getTimeLavel()
+        context['time_labels'] = get_timeLavel()
         return context
 
 # 生成結果画面
@@ -114,7 +114,7 @@ class ResultView(TemplateView):
             else:
                 params[band].append(int(time))
 
-        timetables = getTimetables(params)
+        timetables = get_timetables(params)
         context = {
             'timetables': timetables,
             'time_labels': getTimeLavel()
