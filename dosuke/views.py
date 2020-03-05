@@ -116,8 +116,8 @@ class ResultView(TemplateView):
 
         data = pd.DataFrame(data_list, columns=['band', 'day', 'hour'])
 
-        # timetable_dict = get_timetables_with_pulp(data)
-        timetable_dict = get_timetables(data)
+        timetable_dict = get_timetables_with_pulp(data)
+        # timetable_dict = get_timetables(data)
 
         context = {
             'timetable_dict': timetable_dict,
