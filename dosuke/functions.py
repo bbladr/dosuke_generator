@@ -6,21 +6,20 @@ import random
 from .models import Band, Member
 
     
-# 最大時間コマ数
+# 最大防音室利用可能コマ数
 LEN_ALL_FRAME = 27
 
+# 防音室使用可能枠
+room_start = 0
+room_end = 27
+room_frames = [i for i in range(room_start, room_end)]
+
+# セッション枠
+session_start = 14
+session_end = 20
+session_frames = [i for i in range(session_start, session_end)]
 
 def get_timetables(data):
-
-    # 防音室使用可能枠
-    room_start = 0
-    room_end = 27
-    room_frames = [i for i in range(room_start, room_end)]
-
-    # セッション開始終了時刻
-    session_start = 14
-    session_end = 20
-    session_frames = [i for i in range(session_start, session_end)]
 
     # とるコマの優先順
     frame_prim = [14,15,16,17,18,19,13,12,11,10,20,21,22,23,24,25,26,9,8,7,6,5,4,3,2,1,0]
@@ -326,10 +325,18 @@ def get_timetables_with_pulp(data):
     df['Val'] = df.Var.apply(pulp.value)
     result = df[df.Val>0.5].drop(columns=['Var','Val'])
 
+    # 練習枠の初期化
+    timetable_base = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
+
+    # 防音室利用可能時間の箇所を None (空)にする
+    for i in room_frames:
+        timetable_base[i] = None
+
     for day in result['day']:
-        timetable_dict[day] = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
+        timetable = timetable_base.copy()
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band']
-            timetable_dict[day][hour] = Band.objects.get(id=band_pk)
+            timetable[hour] = Band.objects.get(id=band_pk)
+        timetable_dict[day] = timetable
 
     return timetable_dict
