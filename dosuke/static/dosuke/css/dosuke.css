@@ -31,3 +31,6 @@ input[type=checkbox] {
 input[type=checkbox]:checked + .form-check-label:after {
   background-color: orange;
 }
+.band-block {
+  box-sizing: border-box;
+}
