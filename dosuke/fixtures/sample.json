@@ -1,0 +1,467 @@
+[
+  {
+    "model": "dosuke.member",
+    "pk": 0,
+    "fields":{
+      "name": "OKA",
+      "entry_year": "2014",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 1,
+    "fields":{
+      "name": "SAKAI",
+      "entry_year": "2014",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 2,
+    "fields":{
+      "name": "ISHIDAb",
+      "entry_year": "2015",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 3,
+    "fields":{
+      "name": "ISHIWATA",
+      "entry_year": "2015",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 4,
+    "fields":{
+      "name": "UMEZU",
+      "entry_year": "2015",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 5,
+    "fields":{
+      "name": "KIMURA",
+      "entry_year": "2015",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 6,
+    "fields":{
+      "name": "TAKIZAWA",
+      "entry_year": "2015",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 7,
+    "fields":{
+      "name": "NAGATA",
+      "entry_year": "2016",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 8,
+    "fields":{
+      "name": "HASHIMOTO",
+      "entry_year": "2016",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 9,
+    "fields":{
+      "name": "HANZAWA",
+      "entry_year": "2016",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 10,
+    "fields":{
+      "name": "WATANABE",
+      "entry_year": "2016",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 11,
+    "fields":{
+      "name": "ISHIMORI",
+      "entry_year": "2017",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 12,
+    "fields":{
+      "name": "ITO",
+      "entry_year": "2017",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 13,
+    "fields":{
+      "name": "KURIHARA",
+      "entry_year": "2017",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 14,
+    "fields":{
+      "name": "SUDO",
+      "entry_year": "2017",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 15,
+    "fields":{
+      "name": "TANAKA",
+      "entry_year": "2017",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 16,
+    "fields":{
+      "name": "MARUYAMA",
+      "entry_year": "2017",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 17,
+    "fields":{
+      "name": "IKEMIYA",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 18,
+    "fields":{
+      "name": "OKITA",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 19,
+    "fields":{
+      "name": "KANEKO",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 20,
+    "fields":{
+      "name": "KOJIMA",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 21,
+    "fields":{
+      "name": "SAIGA",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 22,
+    "fields":{
+      "name": "SHIKAUCHI",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 23,
+    "fields":{
+      "name": "JITSUKAWA",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 24,
+    "fields":{
+      "name": "SUGIMOTO",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 25,
+    "fields":{
+      "name": "NUMAMOTO",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 26,
+    "fields":{
+      "name": "HIRATA",
+      "entry_year": "2018",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 27,
+    "fields":{
+      "name": "IIDA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 28,
+    "fields":{
+      "name": "IGUMA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 29,
+    "fields":{
+      "name": "ISHIDAtp",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 30,
+    "fields":{
+      "name": "OHYA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 31,
+    "fields":{
+      "name": "OGURI",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 32,
+    "fields":{
+      "name": "KAUCHI",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 33,
+    "fields":{
+      "name": "KAGEYAMA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 34,
+    "fields":{
+      "name": "KATO",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 35,
+    "fields":{
+      "name": "KAMIYAMA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 36,
+    "fields":{
+      "name": "KAWAKAMI",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 37,
+    "fields":{
+      "name": "KOSAKA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 38,
+    "fields":{
+      "name": "JINNAI",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 39,
+    "fields":{
+      "name": "MAEKAWA",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.member",
+    "pk": 40,
+    "fields":{
+      "name": "MORI",
+      "entry_year": "2019",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "MAEKAWA",
+      "members": [14, 27, 28, 37, 39],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "OKA",
+      "members": [0, 9, 10, 16, 38],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "NAGATA",
+      "members": [1, 3, 6, 7, 10, 32],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "ISHIDA",
+      "members": [2, 14, 19, 29, 32, 34],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "KAWAKAMI",
+      "members": [25, 26, 35, 36, 39],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "SUDO",
+      "members": [13, 14, 29, 25, 33, 40],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "SUGIMOTO",
+      "members": [11, 17, 23, 24],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "NUMAMOTO",
+      "members": [7, 15, 17, 22, 25, 38],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "HASHIMOTO",
+      "members": [4, 8, 10],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "ITO",
+      "members": [4, 12, 15],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "OGURI",
+      "members": [6, 30, 31],
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.band",
+    "fields":{
+      "name": "OKITA",
+      "members": [14, 18, 21, 23, 26],
+      "memo": ""
+    }
+  }
+]
