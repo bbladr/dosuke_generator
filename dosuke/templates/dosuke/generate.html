@@ -27,7 +27,9 @@
           {% for day in '12345'|make_list %}
             <div class="row mb-2">
               <div class="col-1 text-right">
-                {{ band }}
+                {% if forloop.first %}
+                  {{ band }}
+                {% endif %}
               </div>
               <div class="col-1 text-right">
                 {{ day }}日目
