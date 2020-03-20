@@ -108,6 +108,7 @@ class ResultView(TemplateView):
         # まずは req から必要な値を抽出
         data_list = []
 
+        # クエリ数が多すぎて DATA_UPLOAD_MAX_NUMBER_FIELDS を変更(../Dosuke_pro/settings.py)して許容してるので data を使うようにする
         for key in [key for key in request.POST if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
             
             # アンダーバーを境目にバンド名とコマ番を取得
