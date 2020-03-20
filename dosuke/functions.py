@@ -264,9 +264,10 @@ def get_time_lavel():
   return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)]
 
 
-# 最適化問題を得方法
+# 最適化問題を解くやり方
 def get_timetables_with_pulp(data):
 
+    # data['name']にバンド名、data['band']にIDが入るようにする
     data['name'] = data['band']
     for band_name in set(data['name']):
         band = Band.objects.get(name=band_name)
@@ -281,7 +282,7 @@ def get_timetables_with_pulp(data):
     fy = y - (15-m)//12 # 年度
 
     band_list = []
-    
+
     for band in Band.objects.all():
         grade_sum = 0
         for member in Member.objects.filter(band__name=band).all():
@@ -294,7 +295,8 @@ def get_timetables_with_pulp(data):
         (i
         ,j
         ,k
-        ,j*l*0.1 if j<16 else (35-j)*l*0.1
+        # ,abs(j-16)*l*(-0.1)
+        ,0
         ,pulp.LpVariable(f'Var_{i}_{j}_{k}', cat=pulp.LpBinary)
         )
         for i in data['day'].unique()
@@ -307,24 +309,41 @@ def get_timetables_with_pulp(data):
     model = LpProblem(sense=LpMaximize)
     model +=  pulp.lpSum(df.Var) + pulp.lpDot(df.Var,df['rank'])
 
+
+    # セッションの時間を取り除く
+    for key, group in df.groupby('hour'):
+        if key in session_frames:
+            model += pulp.lpSum(group.Var)==0 
     #各時間に練習できるのは1バンドのみ
     for key, group in df.groupby(['day', 'hour']):
         model += pulp.lpSum(group.Var)<=1
     #1日に練習していいのは一回のみ
     for key, group in df.groupby(['day', 'band']):
-        model += pulp.lpSum(group.Var)<=1
+        model += pulp.lpSum(group.Var)<=3
     #希望時間にそう様にする
     for key, group in df.groupby(['day', 'hour', 'band']):
         if len(data[(data.day==key[0])&(data.hour==key[1])&(data.band==key[2])]) == 0:
             model += lpSum(group.Var) == 0
         else:
             model += lpSum(group.Var) <= 1
+        d, h, b = key
+        # 連続した時間をとるようにする
+        if h == 0:
+            x0 = 0
+        else:
+            x0 = df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+        x1 = df[(df['hour']==h) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+        if h == 26:
+            x2 = 0
+        else:
+            x2 = df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+        
+        model += x0 + x2 - x1 >= 0
 
     assert model.solve()
 
     df['Val'] = df.Var.apply(pulp.value)
     result = df[df.Val>0.5].drop(columns=['Var','Val'])
-
     # 練習枠の初期化
     timetable_base = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
 
@@ -334,9 +353,9 @@ def get_timetables_with_pulp(data):
 
     for day in result['day']:
         timetable = timetable_base.copy()
+        timetable[session_start:session_end] = ['セッション']*len(session_frames)
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band']
             timetable[hour] = Band.objects.get(id=band_pk)
         timetable_dict[day] = timetable
-
     return timetable_dict
