@@ -129,3 +129,5 @@ LOGOUT_REDIRECT_URL='/'
 
 # django-crispy-forms 設定
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
