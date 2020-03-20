@@ -38,3 +38,22 @@ $('.non-select-all').on('click', function(e) {
   const name = $(this).attr('name');
   $(`.${name}`).prop('checked', false);
 });
+
+function dispLoading(msg){
+  // 引数なし（メッセージなし）を許容
+  if( msg == undefined ){
+    msg = "";
+  }
+  // 画面表示メッセージ
+  var dispMsg = "<div class='loadingMsg'>" + msg + "</div>";
+  // ローディング画像が表示されていない場合のみ出力
+  if($("#loading").length == 0){
+    $("body").append("<div id='loading'>" + dispMsg + "</div>");
+  }
+}
+
+$(function () {
+  $(".btn-generate").click( function() {
+    dispLoading("土スケ生成中...");
+  });
+});
