@@ -1,0 +1,18 @@
+[
+  {
+    "model": "dosuke.config",
+    "fields":{
+      "key": "session_start",
+      "value": "14",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.config",
+    "fields":{
+      "key": "session_end",
+      "value": "20",
+      "memo": ""
+    }
+  }
+]

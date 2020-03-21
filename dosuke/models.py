@@ -55,3 +55,31 @@ class Band(models.Model):
     class Meta:
         verbose_name = 'Band'
         verbose_name_plural = 'Band'
+
+class Config(models.Model):
+
+    key = models.CharField(
+        verbose_name='key',
+        max_length=20,
+    )
+
+    value = models.TextField(
+        verbose_name='value',
+        max_length=300,
+        blank=False,
+    )
+
+    memo = models.TextField(
+        verbose_name='description',
+        max_length=300,
+        blank=True,
+        null=True,
+    )
+
+    # 以下は管理サイト上の表示設定
+    def __str__(self):
+        return self.key
+
+    class Meta:
+        verbose_name = 'Config'
+        verbose_name_plural = 'Config'
