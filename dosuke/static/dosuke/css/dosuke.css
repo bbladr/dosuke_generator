@@ -34,6 +34,12 @@ input[type=checkbox]:checked + .form-check-label:after {
 input[type=checkbox]:disabled + .form-check-label:after {
   background-color: lightgray;
 }
+input[type=checkbox].session_frame + .form-check-label:after {
+  background-color: lightskyblue;
+}
+input[type=checkbox].selected_frame + .form-check-label:after {
+  background-color: orange;
+}
 .band-block {
   box-sizing: border-box;
 }

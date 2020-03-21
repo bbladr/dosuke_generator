@@ -14,5 +14,21 @@
       "value": "20",
       "memo": ""
     }
+  },
+  {
+    "model": "dosuke.config",
+    "fields":{
+      "key": "room_start",
+      "value": "0",
+      "memo": ""
+    }
+  },
+  {
+    "model": "dosuke.config",
+    "fields":{
+      "key": "room_end",
+      "value": "27",
+      "memo": ""
+    }
   }
 ]

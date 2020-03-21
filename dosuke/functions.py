@@ -3,20 +3,21 @@ from pulp import *
 import pandas as pd
 import random
 
-from .models import Band, Member
+from .models import Band, Member, Config
 
     
 # 最大防音室利用可能コマ数
 LEN_ALL_FRAME = 27
 
+## TODO ここらへんGUIで設定したいかも（一部の時間だけ使えないとかにも対応）
 # 防音室使用可能枠
-room_start = 0
-room_end = 27
+room_start = int(Config.objects.get(key='room_start').value)
+room_end = int(Config.objects.get(key='room_end').value)
 room_frames = [i for i in range(room_start, room_end)]
 
 # セッション枠
-session_start = 14
-session_end = 20
+session_start = int(Config.objects.get(key='session_start').value)
+session_end = int(Config.objects.get(key='session_end').value)
 session_frames = [i for i in range(session_start, session_end)]
 
 def get_timetables(data):

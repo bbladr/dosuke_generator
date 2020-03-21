@@ -101,6 +101,9 @@ class GenerateView(LoginRequiredMixin, TemplateView):
         session_start = int(Config.objects.get(key='session_start').value)
         session_end = int(Config.objects.get(key='session_end').value)
         context['session_frames'] = range(session_start, session_end)
+        room_start = int(Config.objects.get(key='room_start').value)
+        room_end = int(Config.objects.get(key='room_end').value)    
+        context['room_frames'] = range(room_start, room_end)
         return context
 
 # 生成結果画面

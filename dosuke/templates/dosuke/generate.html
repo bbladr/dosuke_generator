@@ -8,7 +8,29 @@
         <form action="result/" method="post">
           <div class="row mb-2">
             <div class="col-12">
-              <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+              <div class="float-left">
+                <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+              </div>
+              <div class="float-right">
+                <input 
+                  class="form-check-input selected_frame"
+                  type="checkbox" 
+                  disabled
+                >
+                <label class="form-check-label"><span class="ml-4">: 希望中</span></label>
+                <input 
+                  class="form-check-input session_frame"
+                  type="checkbox" 
+                  disabled
+                >
+                <label class="form-check-label"><span class="ml-4">: セッション</span></label>
+                <input 
+                  class="form-check-input"
+                  type="checkbox" 
+                  disabled
+                >
+                <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
+              </div>
             </div>
           </div>
           {% csrf_token %}
@@ -38,11 +60,12 @@
                 <div class="col-8 d-flex justify-content-between">
                   {% for _ in ''|center:27 %}
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input {{ band }}_{{ day }}"
+                      <input 
+                        class="form-check-input {{ band }}_{{ day }} {% if forloop.counter0 in session_frames %} session_frame {% endif %}"
                         type="checkbox" 
                         id="{{ band }}_{{ day }}_{{ forloop.counter0 }}"
                         name="{{ band }}_{{ day }}_{{ forloop.counter0 }}"
-                        {% if forloop.counter0 in session_frames %}
+                        {% if forloop.counter0 in session_frames or not forloop.counter0 in room_frames %}
                           disabled
                         {% endif %}
                       >
