@@ -5,7 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from .models import Band, Member
+from .models import Band, Member, Config
 from .forms import BandForm, MemberForm
 from .functions import get_timetables, get_time_lavel, get_timetables_with_pulp
 
@@ -98,6 +98,9 @@ class GenerateView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['bands'] = Band.objects.all()
         context['time_labels'] = get_time_lavel()
+        session_start = int(Config.objects.get(key='session_start').value)
+        session_end = int(Config.objects.get(key='session_end').value)
+        context['session_frames'] = range(session_start, session_end)
         return context
 
 # 生成結果画面
