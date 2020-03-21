@@ -131,3 +131,7 @@ class ResultView(TemplateView):
             'time_labels': get_time_lavel()
         }
         return self.render_to_response(context)
+
+# 生成結果画面
+class SettingView(TemplateView):
+    template_name = "dosuke/setting.html"

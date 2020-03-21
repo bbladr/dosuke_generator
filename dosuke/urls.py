@@ -26,4 +26,6 @@ urlpatterns = [
     path('', views.GenerateView.as_view(), name='generate'),
     # 土スケ生成結果画面
     path('result/', views.ResultView.as_view(), name='result'),
+    # 設定画面
+    path('setting/', views.SettingView.as_view(), name='setting'),
 ]
