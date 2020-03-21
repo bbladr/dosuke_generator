@@ -328,12 +328,12 @@ def get_timetables_with_pulp(data):
             model += lpSum(group.Var) <= 1
         d, h, b = key
         # 連続した時間をとるようにする
-        if h == 0:
+        if len(df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)]) == 0:
             x0 = 0
         else:
             x0 = df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
         x1 = df[(df['hour']==h) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
-        if h == 26:
+        if len(df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)]) == 0:
             x2 = 0
         else:
             x2 = df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
