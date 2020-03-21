@@ -1,13 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import redirect
 from django.urls import reverse
 
 from .models import Band, Member, Config
-from .forms import BandForm, MemberForm
-from .functions import get_timetables, get_time_lavel, get_timetables_with_pulp
+from .forms import BandForm, MemberForm, ConfigForm
+from .functions import get_timetables, get_time_label, get_timetables_with_pulp
 
 import re
 import pandas as pd
@@ -97,7 +97,7 @@ class GenerateView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['bands'] = Band.objects.all()
-        context['time_labels'] = get_time_lavel()
+        context['time_labels'] = get_time_label()
         session_start = int(Config.objects.get(key='session_start').value)
         session_end = int(Config.objects.get(key='session_end').value)
         context['session_frames'] = range(session_start, session_end)
@@ -128,10 +128,28 @@ class ResultView(TemplateView):
 
         context = {
             'timetable_dict': timetable_dict,
-            'time_labels': get_time_lavel()
+            'time_labels': get_time_label()
         }
         return self.render_to_response(context)
 
-# 生成結果画面
-class SettingView(TemplateView):
-    template_name = "dosuke/setting.html"
+# 設定画面
+class SettingView(FormView):
+    template_name = 'dosuke/setting.html'
+    form_class = ConfigForm
+    success_url = "/setting/"
+
+# class SettingView(DetailView):
+#     model = Config
+
+
+# def add(request):
+#     formset = ConfigFormSet(request.POST or None)
+#     if request.method == 'POST' and formset.is_valid():
+#         formset.save()
+#         return redirect('setting')
+
+#     context = {
+#         'formset': formset
+#     }
+
+#     return render(request, 'dosuke/setting.html', context)

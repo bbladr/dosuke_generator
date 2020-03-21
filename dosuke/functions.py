@@ -261,7 +261,7 @@ def get_timetables(data):
     return timetable_dict
 
 
-def get_time_lavel():
+def get_time_label():
   return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)]
 
 
