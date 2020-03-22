@@ -57,3 +57,7 @@ $(function () {
     dispLoading("土スケ生成中...");
   });
 });
+
+setTimeout(function(){
+  $('.appear-2s').addClass("d-none");
+},2000);

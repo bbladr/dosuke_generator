@@ -1,10 +1,11 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import ListView, DetailView, TemplateView, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import redirect
 from django.urls import reverse
-
+from django.contrib import messages
 from .models import Band, Member, Config
 from .forms import BandForm, MemberForm, ConfigForm
 from .functions import get_timetables, get_time_label, get_timetables_with_pulp
@@ -146,4 +147,6 @@ class SettingView(FormView):
                 config = Config.objects.get(key=key)
                 config.value = request.POST[key]
                 config.save()
+        messages.success(request, '更新しました。')
         return redirect('setting')
+        # return request

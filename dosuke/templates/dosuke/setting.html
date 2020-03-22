@@ -9,6 +9,9 @@
     </div>
     <div class="row mt-3">
         <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-success my-3 appear-2s" role="alert">{{ message }}</div>
+            {% endfor %}
             <form action="/setting/" method="post">
                 {% csrf_token %}
                 {{ form }}
