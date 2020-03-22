@@ -30,18 +30,18 @@ $ source dosuke_env/bin/activate
 $ pip3 install -r requirements.txt
 $ LDFLAGS=-L/usr/local/opt/openssl/lib pip install mysqlclient # https://github.com/PyMySQL/mysqlclient-python/issues/131
 ```
-4. Create admin user
+4. Migrate
+```
+$ sh create_db_and_dosuke_config_table_with_default_records.sh
+$ python3 manage.py makemigrations
+$ python3 manage.py migrate
+```
+5. Create admin user
 ```
 $ python3 manage.py createsuperuser
 > username
 > email (allow null)
 > password * 2
-```
-5. Migrate
-```
-$ sh create_db_and_dosuke_config_table_with_default_records.sh
-$ python3 manage.py makemigrations
-$ python3 manage.py migrate
 ```
 6. Import default settings and sample data
 ```
