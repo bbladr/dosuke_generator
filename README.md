@@ -13,7 +13,6 @@
 - git
 - python3
 - pip3
-- pyenv
 
 ### Install and Build
 1. Install this app
