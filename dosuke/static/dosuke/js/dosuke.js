@@ -39,6 +39,14 @@ $('.non-select-all').on('click', function(e) {
   $(`.${name}`).prop('checked', false);
 });
 
+$('.global-select-all').on('click', function(e) {
+  $(`.form-check-input`).prop('checked', true);
+})
+
+$('.global-non-select-all').on('click', function(e) {
+  $(`.form-check-input`).prop('checked', false);
+})
+
 function dispLoading(msg){
   // 引数なし（メッセージなし）を許容
   if( msg == undefined ){

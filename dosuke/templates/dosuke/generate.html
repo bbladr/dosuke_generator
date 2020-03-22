@@ -7,7 +7,7 @@
       {% if bands %}
         <form action="result/" method="post">
           <div class="row mb-2">
-            <div class="col-12">
+            <div class="col-10">
               <div class="float-left">
                 <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
               </div>
@@ -32,8 +32,16 @@
                 <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
               </div>
             </div>
+            <div class="col-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm global-select-all">一括選択</button>
+            </div>
+            <div class="col-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all">一括解除</button>
+            </div>
           </div>
           {% csrf_token %}
+
+
           {% for band in bands %}
             <div class="row mt-4">
               <div class="col-2 text-right">
@@ -61,7 +69,7 @@
                   {% for _ in ''|center:27 %}
                     <div class="form-check form-check-inline">
                       <input 
-                        class="form-check-input {{ band }}_{{ day }} {% if forloop.counter0 in session_frames %} session_frame {% endif %}"
+                        class="form-check-input {{ band }}_{{ day }} {% if forloop.counter0 in session_frames and forloop.counter0 in room_frames %} session_frame {% endif %}"
                         type="checkbox" 
                         id="{{ band }}_{{ day }}_{{ forloop.counter0 }}"
                         name="{{ band }}_{{ day }}_{{ forloop.counter0 }}"
