@@ -16,23 +16,27 @@
 - pyenv
 
 ### Install and Build
-1. Create and activate a python virtual environment
+1. Install this app
+```
+$ git clone https://github.com/bbladr/dosuke_generator.git dosuke_generator
+$ cd dosuke_generator
+```
+2. Create and activate a python virtual environment
 ```
 $ python3 -m venv dosuke_env
 $ source dosuke_env/bin/activate 
 ```
-2. Install this app and packages
+3. Install packages
 ```
-$ git clone https://github.com/bbladr/dosuke_generator.git dosuke_generator
-$ cd dosuke_generator
-pip install -r requirements.txt
+$ pip3 install -r requirements.txt
+$ LDFLAGS=-L/usr/local/opt/openssl/lib pip install mysqlclient # https://github.com/PyMySQL/mysqlclient-python/issues/131
 ```
-3. Migrate
+4. Migrate
 ```
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 ```
-4. Import default settings and sample data
+5. Import default settings and sample data
 ```
 $ python3 manage.py loaddata config_seed
 $ python3 manage.py loaddata sample
