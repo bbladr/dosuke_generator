@@ -9,7 +9,6 @@ from .models import Band, Member, Config
 from .forms import BandForm, MemberForm, ConfigForm
 from .functions import get_timetables, get_time_label, get_timetables_with_pulp
 
-import re
 import pandas as pd
 
 ### バンド
@@ -40,7 +39,6 @@ class BandCreateView(LoginRequiredMixin, CreateView):
         # see: https://qiita.com/tatamyiwathy/items/3ab83ab95c0ce62ede6e
         form.save_m2m()
 
-        print(request.POST)
         return redirect('band_detail', pk=obj.pk)
 
 # バンド更新画面
@@ -115,8 +113,10 @@ class ResultView(TemplateView):
         data_list = []
 
         # クエリ数が多すぎて DATA_UPLOAD_MAX_NUMBER_FIELDS を変更(../Dosuke_pro/settings.py)して許容してるので data を使うようにする
-        for key in [key for key in request.POST if re.search('_', key)]: # アンダーバーが入っていたら希望時間用の値として判断する
-            
+        for key in request.POST:
+            if key == 'csrfmiddlewaretoken':
+                continue
+
             # アンダーバーを境目にバンド名とコマ番を取得
             band, day, time = key.split('_')
             data_list.append([band, int(day), int(time)])
@@ -136,20 +136,14 @@ class ResultView(TemplateView):
 class SettingView(FormView):
     template_name = 'dosuke/setting.html'
     form_class = ConfigForm
-    success_url = "/setting/"
 
-# class SettingView(DetailView):
-#     model = Config
-
-
-# def add(request):
-#     formset = ConfigFormSet(request.POST or None)
-#     if request.method == 'POST' and formset.is_valid():
-#         formset.save()
-#         return redirect('setting')
-
-#     context = {
-#         'formset': formset
-#     }
-
-#     return render(request, 'dosuke/setting.html', context)
+    def post(self, request, **kwargs):
+        form = ConfigForm(request.POST)
+        if form.is_valid():
+            for key in request.POST:
+                if key == 'csrfmiddlewaretoken':
+                    continue
+                config = Config.objects.get(key=key)
+                config.value = request.POST[key]
+                config.save()
+        return redirect('setting')

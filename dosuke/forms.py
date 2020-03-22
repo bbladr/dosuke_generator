@@ -32,42 +32,38 @@ class MemberForm(forms.ModelForm):
               }
 
 class ConfigForm(forms.Form):
-  configs = {}
-  for config in Config.objects.all():
-    configs[config.key] = config.value
-
   time_choices = [(i, label) for i, label in enumerate(get_time_label())]
-  sessionStart = forms.ChoiceField(
+  session_start = forms.ChoiceField(
     label='セッション開始時間',
     widget=forms.Select,
-    initial=[configs['session_start']],
     choices=time_choices,
     required=True,
   )
-  sessionEnd = forms.ChoiceField(
+  session_end = forms.ChoiceField(
     label='セッション終了時間',
     widget=forms.Select,
-    initial=[configs['session_end']],
     choices=time_choices,
     required=True,
   )
-  roomStart = forms.ChoiceField(
+  room_start = forms.ChoiceField(
     label='防音室開始時間',
     widget=forms.Select,
-    initial=[configs['room_start']],
     choices=time_choices,
     required=True,
   )
-  roomEnd = forms.ChoiceField(
+  room_end = forms.ChoiceField(
     label='防音室終了時間',
     widget=forms.Select,
-    initial=[configs['room_end']],
+    initial=[],
     choices=time_choices,
     required=True,
   )
 
   def __init__(self, *args, **kwargs):
-      super().__init__(*args, **kwargs)
-      for field in self.fields.values():
-          field.widget.attrs['class'] = 'form-control mb-3'
-
+    super().__init__(*args, **kwargs)
+    configs = {}
+    for config in Config.objects.all():
+      configs[config.key] = config.value
+    for key, field in self.fields.items():
+      field.widget.attrs['class'] = 'form-control mb-3'
+      field.initial = configs[key]
