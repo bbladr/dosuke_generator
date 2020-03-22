@@ -54,8 +54,13 @@ class ConfigForm(forms.Form):
   room_end = forms.ChoiceField(
     label='防音室終了時間',
     widget=forms.Select,
-    initial=[],
     choices=time_choices,
+    required=True,
+  )
+  max_days = forms.ChoiceField(
+    label='日数',
+    widget=forms.Select,
+    choices=[(i, i) for i in range(1,6)],
     required=True,
   )
 

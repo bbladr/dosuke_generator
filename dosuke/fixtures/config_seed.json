@@ -30,5 +30,13 @@
       "value": "27",
       "memo": ""
     }
+  },
+  {
+    "model": "dosuke.config",
+    "fields":{
+      "key": "max_days",
+      "value": "5",
+      "memo": ""
+    }
   }
 ]

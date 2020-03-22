@@ -103,6 +103,8 @@ class GenerateView(LoginRequiredMixin, TemplateView):
         room_start = int(Config.objects.get(key='room_start').value)
         room_end = int(Config.objects.get(key='room_end').value)    
         context['room_frames'] = range(room_start, room_end)
+        max_days = int(Config.objects.get(key='max_days').value)
+        context['days'] = range(1,max_days+1)
         return context
 
 # 生成結果画面
