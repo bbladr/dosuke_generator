@@ -33,7 +33,6 @@ $ LDFLAGS=-L/usr/local/opt/openssl/lib pip install mysqlclient # https://github.
 4. Migrate
 ```
 $ sh create_db_and_dosuke_config_table_with_default_records.sh
-$ python3 manage.py makemigrations
 $ python3 manage.py migrate
 ```
 5. Create admin user
