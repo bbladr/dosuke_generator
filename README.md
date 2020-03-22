@@ -21,11 +21,11 @@
 $ python3 -m venv dosuke_env
 $ source dosuke_env/bin/activate 
 ```
-2. Install this app and Django
+2. Install this app and packages
 ```
 $ git clone https://github.com/bbladr/dosuke_generator.git dosuke_generator
 $ cd dosuke_generator
-$ pip3 install django
+pip install -r requirements.txt
 ```
 3. Migrate
 ```
