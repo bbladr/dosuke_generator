@@ -31,12 +31,16 @@ $ source dosuke_env/bin/activate
 $ pip3 install -r requirements.txt
 $ LDFLAGS=-L/usr/local/opt/openssl/lib pip install mysqlclient # https://github.com/PyMySQL/mysqlclient-python/issues/131
 ```
-4. Migrate
+4. Create admin user
+```
+$ python3 manage.py createsuperuser
+```
+5. Migrate
 ```
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 ```
-5. Import default settings and sample data
+6. Import default settings and sample data
 ```
 $ python3 manage.py loaddata config_seed
 $ python3 manage.py loaddata sample
