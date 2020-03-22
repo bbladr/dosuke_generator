@@ -42,7 +42,6 @@ $ python3 manage.py migrate
 ```
 6. Import default settings and sample data
 ```
-$ python3 manage.py loaddata config_seed
 $ python3 manage.py loaddata sample
 ```
 5. Build a server
