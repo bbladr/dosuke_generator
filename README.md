@@ -29,8 +29,9 @@ $ cd dosuke_generator
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 ```
-4. Import sample data
+4. Import default settings and sample data
 ```
+$ python3 manage.py loaddata config_seed
 $ python3 manage.py loaddata sample
 ```
 5. Build a server
