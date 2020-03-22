@@ -20,6 +20,7 @@ session_start = int(Config.objects.get(key='session_start').value)
 session_end = int(Config.objects.get(key='session_end').value)
 session_frames = [i for i in range(session_start, session_end)]
 
+# 原始的な方法
 def get_timetables(data):
 
     # とるコマの優先順
@@ -268,7 +269,7 @@ def get_time_label():
 # 最適化問題を解くやり方
 def get_timetables_with_pulp(data):
 
-    # data['name']にバンド名、data['band']にIDが入るようにする
+    # data['name']にバンド名、data['band']にバンドIDが入るようにする
     data['name'] = data['band']
     for band_name in set(data['name']):
         band = Band.objects.get(name=band_name)
@@ -276,7 +277,7 @@ def get_timetables_with_pulp(data):
 
     timetable_dict = {}
 
-    # 学年設定用に現在の年度を算出
+    # 学年算出用に現在の年度を算出
     today = date.today()
     y = today.year
     m = today.month
@@ -286,18 +287,20 @@ def get_timetables_with_pulp(data):
 
     for band in Band.objects.all():
         grade_sum = 0
+        # バンドに所属してるメンバーを取り出し、学年の総和を出す
         for member in Member.objects.filter(band__name=band).all():
             grade_sum += fy - member.entry_year
+        # [バンドID, 学年総和, バンド名] の配列を作成
         band_list.append([band.pk, grade_sum, band])
 
     bands = pd.DataFrame(band_list, columns=['band','grade_sum','name'])
 
     df = pd.DataFrame([
-        (i
-        ,j
-        ,k
-        ,(16-0.01*abs(j-16))*(0.01*l)
-        ,pulp.LpVariable(f'Var_{i}_{j}_{k}', cat=pulp.LpBinary)
+        (i # day
+        ,j # hour
+        ,k # band
+        ,(16-0.01*abs(j-16))*(0.01*l) # rank = 練習時間帯価値 * バンドメンバーの学年総和
+        ,pulp.LpVariable(f'Var_{i}_{j}_{k}', cat=pulp.LpBinary) # pulp 用変数 Var_i_j_k
         )
         for i in data['day'].unique()
         for j in data['hour'].unique()
@@ -305,7 +308,7 @@ def get_timetables_with_pulp(data):
     ], columns=['day', 'hour', 'band', 'rank', 'Var'])
     dff = df.drop(columns=['rank','Var'])
 
-    #練習時間+メンバーの学年総和×練習時間帯価値の最大化
+    # 練習時間+メンバーの学年総和×練習時間帯価値の最大化
     # 練習時間: [0, (防音室利用可能コマ数(デフォルト:20))] * 1
     # メンバーの学年総和: [0, (せいぜい)30] * 0.01
     # 練習時間帯価値: [0, 16] * 0.01 
@@ -317,48 +320,58 @@ def get_timetables_with_pulp(data):
     for key, group in df.groupby('hour'):
         if key in session_frames:
             model += pulp.lpSum(group.Var)==0 
-    #各時間に練習できるのは1バンドのみ
+    # 各時間に練習できるのは1バンドのみ
     for key, group in df.groupby(['day', 'hour']):
         model += pulp.lpSum(group.Var)<=1
-    #1日に練習していいのは一回のみ
+    # 1バンドが1日に練習していいのは1.5hまで
     for key, group in df.groupby(['day', 'band']):
         model += pulp.lpSum(group.Var)<=3
-    #希望時間にそう様にする
     for key, group in df.groupby(['day', 'hour', 'band']):
+        # 希望時間にそうようにする
         if len(data[(data.day==key[0])&(data.hour==key[1])&(data.band==key[2])]) == 0:
             model += lpSum(group.Var) == 0
         else:
             model += lpSum(group.Var) <= 1
-        d, h, b = key
+
         # 連続した時間をとるようにする
+        # あるバンドのある日のある時間に対し、その枠をとってたら前後の枠のどちらかがとってあるようにする
+        d, h, b = key
+        # 前の枠をとってるかどうか(0 or 1)（前の枠が存在しない場合は0）
         if len(df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)]) == 0:
             x0 = 0
         else:
-            x0 = df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+            x0 = df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)].Var.iloc[0] 
+        # その枠をとってるかどうか(0 or 1)
         x1 = df[(df['hour']==h) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+        # 次の枠をとってるかどうか(0 or 1)（次の枠が存在しない場合は0）
         if len(df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)]) == 0:
             x2 = 0
         else:
             x2 = df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
-        
+        # 前の枠 + 次の枠 - その枠 >= 0
+        # -> その枠が 0 の場合、前後の枠がなんであろうと満たされる
+        # -> その枠が 1 の場合、前後の枠の少なくともひとつが 1 である必要がある
         model += x0 + x2 - x1 >= 0
 
     assert model.solve()
 
     df['Val'] = df.Var.apply(pulp.value)
+    # 採用された練習時間とバンドの組み合わせの行のみ取り出す
     result = df[df.Val>0.5].drop(columns=['Var','Val'])
-    # 練習枠の初期化
+
+    # 練習枠表の初期化
     timetable_base = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
 
-    # 防音室利用可能時間の箇所を None (空)にする
+    # 防音室利用可能時間の枠を None (空)にする
     for i in room_frames:
         timetable_base[i] = None
 
+    # 結果を表に埋めていく
     for day in result['day']:
         timetable = timetable_base.copy()
-        timetable[session_start:session_end] = ['セッション']*len(session_frames)
+        timetable[session_start:session_end] = ['セッション']*len(session_frames) # セッション枠
         for hour in result[result['day'] == day]['hour']:
-            band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band']
-            timetable[hour] = Band.objects.get(id=band_pk)
-        timetable_dict[day] = timetable
+            band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
+            timetable[hour] = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
+        timetable_dict[day] = timetable # 1日分の表を追加
     return timetable_dict
