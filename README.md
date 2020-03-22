@@ -40,7 +40,7 @@ $ python3 manage.py migrate
 $ python3 manage.py createsuperuser
 > username
 > email (allow null)
-> password * 2
+> password (least 8 characters) * 2
 ```
 6. Import default settings and sample data
 ```
