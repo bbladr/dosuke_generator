@@ -26,6 +26,7 @@ $ source dosuke_env/bin/activate
 $ git clone https://github.com/bbladr/dosuke_generator.git dosuke_generator
 $ cd dosuke_generator
 $ pip3 install -r requirements.txt
+$ LDFLAGS=-L/usr/local/opt/openssl/lib pip install mysqlclient # https://github.com/PyMySQL/mysqlclient-python/issues/131
 ```
 3. Migrate
 ```
