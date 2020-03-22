@@ -12,6 +12,8 @@
 ### Require
 - git
 - python3
+- pip3
+- pyenv
 
 ### Install and Build
 1. Create and activate a python virtual environment
@@ -19,10 +21,11 @@
 $ python3 -m venv dosuke_env
 $ source dosuke_env/bin/activate 
 ```
-2. Install this app
+2. Install this app and Django
 ```
 $ git clone https://github.com/bbladr/dosuke_generator.git dosuke_generator
 $ cd dosuke_generator
+$ pip3 install django
 ```
 3. Migrate
 ```
