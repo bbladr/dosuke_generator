@@ -25,7 +25,7 @@ $ source dosuke_env/bin/activate
 ```
 $ git clone https://github.com/bbladr/dosuke_generator.git dosuke_generator
 $ cd dosuke_generator
-pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 3. Migrate
 ```
