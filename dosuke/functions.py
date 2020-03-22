@@ -296,8 +296,7 @@ def get_timetables_with_pulp(data):
         (i
         ,j
         ,k
-        # ,abs(j-16)*l*(-0.1)
-        ,0
+        ,(16-0.01*abs(j-16))*(0.01*l)
         ,pulp.LpVariable(f'Var_{i}_{j}_{k}', cat=pulp.LpBinary)
         )
         for i in data['day'].unique()
@@ -306,7 +305,10 @@ def get_timetables_with_pulp(data):
     ], columns=['day', 'hour', 'band', 'rank', 'Var'])
     dff = df.drop(columns=['rank','Var'])
 
-    #練習時間とリーダー学年×練習時間帯の最大化
+    #練習時間+メンバーの学年総和×練習時間帯価値の最大化
+    # 練習時間: [0, (防音室利用可能コマ数(デフォルト:20))] * 1
+    # メンバーの学年総和: [0, (せいぜい)30] * 0.01
+    # 練習時間帯価値: [0, 16] * 0.01 
     model = LpProblem(sense=LpMaximize)
     model +=  pulp.lpSum(df.Var) + pulp.lpDot(df.Var,df['rank'])
 
