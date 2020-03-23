@@ -51,4 +51,4 @@ $ python3 manage.py loaddata sample
 $ python3 manage.py runserver
 ```
 
-Access to [http://localhost:8000/](http://localhost:8000/)
+Access to [http://localhost:8000/](http://localhost:8000/) and login with the admin user.

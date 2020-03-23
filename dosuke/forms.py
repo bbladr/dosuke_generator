@@ -63,6 +63,12 @@ class ConfigForm(forms.Form):
     choices=[(i, i) for i in range(1,6)],
     required=True,
   )
+  solver_thread_num = forms.ChoiceField(
+    label='生成時のスレッド数',
+    widget=forms.Select,
+    choices=[(2**i, 2**i) for i in range(6)],
+    required=True,
+  )
 
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)

@@ -38,5 +38,13 @@
       "value": "5",
       "memo": ""
     }
+  },
+  {
+    "model": "dosuke.config",
+    "fields":{
+      "key": "solver_thread_num",
+      "value": "8",
+      "memo": ""
+    }
   }
 ]

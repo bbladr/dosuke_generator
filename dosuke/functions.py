@@ -2,6 +2,7 @@ from datetime import date
 from pulp import *
 import pandas as pd
 import random
+import time
 
 from .models import Band, Member, Config
 
@@ -353,7 +354,11 @@ def get_timetables_with_pulp(data):
         # -> その枠が 1 の場合、前後の枠の少なくともひとつが 1 である必要がある
         model += x0 + x2 - x1 >= 0
 
-    assert model.solve()
+    start = time.time()
+    solver_thread_num = int(Config.objects.get(key='solver_thread_num').value)
+    solver = pulp.PULP_CBC_CMD(threads=solver_thread_num)
+    assert model.solve(solver)
+    print(f'complete to solve ({time.time() - start}s)')
 
     df['Val'] = df.Var.apply(pulp.value)
     # 採用された練習時間とバンドの組み合わせの行のみ取り出す
