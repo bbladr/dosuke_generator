@@ -6,39 +6,26 @@ import time
 
 from .models import Band, Member, Config
 
-# とるコマの優先順
-frame_prim_list = [14,15,16,17,18,19,13,12,11,10,20,21,22,23,24,25,26,9,8,7,6,5,4,3,2,1,0]
+    
+# 最大防音室利用可能コマ数
+LEN_ALL_FRAME = 27
 
+## TODO ここらへんGUIで設定したいかも（一部の時間だけ使えないとかにも対応）
 # 防音室使用可能枠
 room_start = int(Config.objects.get(key='room_start').value)
 room_end = int(Config.objects.get(key='room_end').value)
+room_frames = [i for i in range(room_start, room_end)]
 
 # セッション枠
 session_start = int(Config.objects.get(key='session_start').value)
 session_end = int(Config.objects.get(key='session_end').value)
-
-# 結果表示用時間ラベル
-def get_time_label_list(hour_per_frame):
-    return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)][::int(hour_per_frame*2)]
-
-# 初期化したタイムテーブルの取得
-def get_initial_timetable(hour_per_frame): # hour_per_frame = 0.5, 1.0, 1.5
-    
-    # 大枠を作る（最大コマ数+1 の長さの padding リスト）
-    timetable = [i for i in ['padding']*(27//int(hour_per_frame * 2)+1)]
-    
-    # 防音室利用可能時間の箇所を None (空)にする
-    for i in range(room_start//int(hour_per_frame * 2), room_end//int(hour_per_frame * 2)):
-        timetable[i] = None
-
-    return timetable
-
+session_frames = [i for i in range(session_start, session_end)]
 
 # 原始的な方法
 def get_timetables(data):
 
-    # セッション枠
-    session_frames = [i for i in range(session_start, session_end)]
+    # とるコマの優先順
+    frame_prim = [14,15,16,17,18,19,13,12,11,10,20,21,22,23,24,25,26,9,8,7,6,5,4,3,2,1,0]
 
     # 1日分のスケジュールを決定するごとに作る案の数
     N = 5
@@ -56,11 +43,14 @@ def get_timetables(data):
                 hope_times[band] = list(data[(data['band'] == band) & (data['day'] == day)]['hour'])
 
             # 練習枠の初期化
-            timetable = get_initial_timetable(0.5)
+            timetable = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
+            # 防音室利用可能時間の箇所を None (空)にする
+            for i in room_frames:
+                timetable[i] = None
 
             # 優先順リストから、利用するコマのみ抽出
-            frame_prim_tmp = frame_prim_list.copy()
-            frame_prim_tmp = [i for i in frame_prim_tmp if i in range(room_start, room_end)]
+            frame_prim_tmp = frame_prim.copy()
+            frame_prim_tmp = [i for i in frame_prim_tmp if i in room_frames]
                 
             # セッション時間を確保
             if not any(timetable[session_start:session_end]):
@@ -273,6 +263,10 @@ def get_timetables(data):
     return timetable_dict
 
 
+def get_time_label():
+  return [f'{(18+i)//2}:{(i%2)*3}0' for i in range(28)]
+
+
 # 最適化問題を解くやり方
 def get_timetables_with_pulp(data):
 
@@ -350,22 +344,33 @@ def get_timetables_with_pulp(data):
     # 採用された練習時間とバンドの組み合わせの行のみ取り出す
     result = df[df.Val>0.5].drop(columns=['Var','Val'])
 
+    # 練習枠表の初期化
+    timetable_base = [i for i in ['padding']*(13+1)]
+
+    # 防音室利用可能時間の枠を None (空)にする
+    for i in range(0,13):
+        timetable_base[i] = None
+
+    session_start_per_hour = 7  
+    session_end_per_hour = 10 
+    session_frames_per_hour = range(7,10)
+
     # 結果を表に埋めていく
     for day in result['day']:
-        timetable = get_initial_timetable(1.0)
-        timetable[session_start//int(hour_per_frame * 2):session_end//int(hour_per_frame * 2)] = ['セッション']*len(range(session_start//int(hour_per_frame * 2), session_end//int(hour_per_frame * 2))) # セッション枠
+        timetable = timetable_base.copy()
+        timetable[session_start_per_hour:session_end_per_hour] = ['セッション']*len(session_frames_per_hour) # セッション枠
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
             timetable[hour] = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
         timetable_dict[day] = timetable # 1日分の表を追加
     return timetable_dict
 
+def get_time_label_per_hour():
+    return [f'{i}:00' for i in range(9,23)]
+
 
 # 最適化問題を解くやり方(30分単位)
 def get_timetables_with_pulp_abnormal(data):
-
-    # セッション枠
-    session_frames = [i for i in range(session_start, session_end)]
 
     # data['name']にバンド名、data['band']にバンドIDが入るようにする
     data['name'] = data['band']
@@ -461,9 +466,16 @@ def get_timetables_with_pulp_abnormal(data):
     # 採用された練習時間とバンドの組み合わせの行のみ取り出す
     result = df[df.Val>0.5].drop(columns=['Var','Val'])
 
+    # 練習枠表の初期化
+    timetable_base = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
+
+    # 防音室利用可能時間の枠を None (空)にする
+    for i in room_frames:
+        timetable_base[i] = None
+
     # 結果を表に埋めていく
     for day in result['day']:
-        timetable = get_initial_timetable(0.5)
+        timetable = timetable_base.copy()
         timetable[session_start:session_end] = ['セッション']*len(session_frames) # セッション枠
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
