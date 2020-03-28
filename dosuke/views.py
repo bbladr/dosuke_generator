@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Band, Member, Config
 from .forms import BandForm, MemberForm, ConfigForm
-from .functions import get_timetables, get_time_label, get_timetables_with_pulp, get_time_label_per_hour, get_timetables_with_pulp_abnormal
+from .functions import get_timetables, get_time_label, get_timetables_with_pulp, get_timetables_with_pulp_abnormal
 
 import pandas as pd
 
@@ -97,15 +97,12 @@ class GenerateView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['bands'] = Band.objects.all()
         context['time_labels'] = get_time_label()
-        context['time_labels_per_hour'] = get_time_label_per_hour()
         session_start = int(Config.objects.get(key='session_start').value)
         session_end = int(Config.objects.get(key='session_end').value)
         context['session_frames'] = range(session_start, session_end)
-        context['session_frames_per_hour'] = range(7, 10)
         room_start = int(Config.objects.get(key='room_start').value)
         room_end = int(Config.objects.get(key='room_end').value)    
         context['room_frames'] = range(room_start, room_end)
-        context['room_frames_per_hour'] = range(0, 13)
         max_days = int(Config.objects.get(key='max_days').value)
         context['days'] = range(1,max_days+1)
         return context
@@ -131,17 +128,14 @@ class ResultView(TemplateView):
 
         if method == "legacy":
             timetable_dict = get_timetables(data)
-            time_labels = get_time_label()
         elif method == "pulp":
             timetable_dict = get_timetables_with_pulp(data)
-            time_labels = get_time_label_per_hour()
         elif method == "ab-pulp":
             timetable_dict = get_timetables_with_pulp_abnormal(data)
-            time_labels = get_time_label()
 
         context = {
             'timetable_dict': timetable_dict,
-            'time_labels': time_labels
+            'time_labels': get_time_label()
         }
         return self.render_to_response(context)
 

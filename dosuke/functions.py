@@ -326,13 +326,33 @@ def get_timetables_with_pulp(data):
         model += pulp.lpSum(group.Var)<=1
     # 1バンドが1日に練習していいのは1.5hまで
     for key, group in df.groupby(['day', 'band']):
-        model += pulp.lpSum(group.Var)<=1
+        model += pulp.lpSum(group.Var)<=3
     for key, group in df.groupby(['day', 'hour', 'band']):
         # 希望時間にそうようにする
         if len(data[(data.day==key[0])&(data.hour==key[1])&(data.band==key[2])]) == 0:
             model += lpSum(group.Var) == 0
         else:
             model += lpSum(group.Var) <= 1
+
+        # 連続した時間をとるようにする
+        # あるバンドのある日のある時間に対し、その枠をとってたら前後の枠のどちらかがとってあるようにする
+        d, h, b = key
+        # 前の枠をとってるかどうか(0 or 1)（前の枠が存在しない場合は0）
+        if len(df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)]) == 0:
+            x0 = 0
+        else:
+            x0 = df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)].Var.iloc[0] 
+        # その枠をとってるかどうか(0 or 1)
+        x1 = df[(df['hour']==h) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+        # 次の枠をとってるかどうか(0 or 1)（次の枠が存在しない場合は0）
+        if len(df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)]) == 0:
+            x2 = 0
+        else:
+            x2 = df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
+        # 前の枠 + 次の枠 - その枠 >= 0
+        # -> その枠が 0 の場合、前後の枠がなんであろうと満たされる
+        # -> その枠が 1 の場合、前後の枠の少なくともひとつが 1 である必要がある
+        model += x0 + x2 - x1 >= 0
 
     start = time.time()
     solver_thread_num = int(Config.objects.get(key='solver_thread_num').value)
@@ -345,28 +365,21 @@ def get_timetables_with_pulp(data):
     result = df[df.Val>0.5].drop(columns=['Var','Val'])
 
     # 練習枠表の初期化
-    timetable_base = [i for i in ['padding']*(13+1)]
+    timetable_base = [i for i in ['padding']*(LEN_ALL_FRAME+1)]
 
     # 防音室利用可能時間の枠を None (空)にする
-    for i in range(0,13):
+    for i in room_frames:
         timetable_base[i] = None
-
-    session_start_per_hour = 7  
-    session_end_per_hour = 10 
-    session_frames_per_hour = range(7,10)
 
     # 結果を表に埋めていく
     for day in result['day']:
         timetable = timetable_base.copy()
-        timetable[session_start_per_hour:session_end_per_hour] = ['セッション']*len(session_frames_per_hour) # セッション枠
+        timetable[session_start:session_end] = ['セッション']*len(session_frames) # セッション枠
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
             timetable[hour] = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
         timetable_dict[day] = timetable # 1日分の表を追加
     return timetable_dict
-
-def get_time_label_per_hour():
-    return [f'{i}:00' for i in range(9,23)]
 
 
 # 最適化問題を解くやり方(30分単位)
