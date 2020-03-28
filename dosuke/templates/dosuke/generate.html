@@ -8,24 +8,23 @@
         <form action="result/" method="post">
           <div class="form-group row mt-4">
             <label class="col-2 col-form-label">メソッド:</label>
-            <button type="button" class="btn btn-secondary mb-2 mb-md-0" data-toggle="tooltip" data-placement="bottom" title="下に出るツールチップ">ツールチップ(下)</button>
             <div class="col-4">
-              <div class="form-check form-check-inline">
+              <div class="form-check form-check-inline" data-toggle="tooltip" data-placement="bottom" title="最適化を使わない方法">
                 <input class="form-check-input" type="radio" name="method-radio" id="method-radio-legacy" value="legacy" checked>
                 <label class="form-check-label" for="method-radio-legacy">Legacy</label>
               </div>
-              <div class="form-check form-check-inline">
+              <div class="form-check form-check-inline" data-toggle="tooltip" data-placement="bottom" data-html="true" title="pulpで組み合わせ最適化を解く方法<br/>（1日1バンドの練習時間は 1 or 1.5h に固定される）">
                 <input class="form-check-input" type="radio" name="method-radio" id="method-radio-pulp" value="pulp">
                 <label class="form-check-label" for="method-radio-pulp">Pulp</label>
               </div>
-              <div class="form-check form-check-inline">
+              <div class="form-check form-check-inline" data-toggle="tooltip" data-placement="bottom" data-html="true" title="無理やり可変な練習時間に対応させた組み合わせ最適化をpulpで解く方法<br/>（希望時間数によって大幅に時間がかかることがある）">
                 <input class="form-check-input" type="radio" name="method-radio" id="method-radio-ab-pulp" value="ab-pulp">
                 <label class="form-check-label" for="method-radio-ab-pulp">Abnormal Pulp</label>
               </div>
             </div>
           </div>
           <div class="row mb-2">
-            <div class="col-10">
+            <div class="col-12">
               <div class="float-left">
                 <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
               </div>
@@ -48,13 +47,9 @@
                   disabled
                 >
                 <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
+                <button type="button" class="btn btn-outline-secondary btn-sm global-select-all ml-3">一括選択</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all ml-3">一括解除</button>
               </div>
-            </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm global-select-all">一括選択</button>
-            </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all">一括解除</button>
             </div>
           </div>
           {% csrf_token %}
