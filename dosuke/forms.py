@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import Band, Member, Config
-from .functions import get_time_label
+from .functions import get_time_label_list
 
 class BandForm(forms.ModelForm):
 
@@ -32,7 +32,7 @@ class MemberForm(forms.ModelForm):
               }
 
 class ConfigForm(forms.Form):
-  time_choices = [(i, label) for i, label in enumerate(get_time_label())]
+  time_choices = [(i, label) for i, label in enumerate(get_time_label_list(0.5))]
   session_start = forms.ChoiceField(
     label='セッション開始時間',
     widget=forms.Select,

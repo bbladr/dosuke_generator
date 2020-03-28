@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Band, Member, Config
 from .forms import BandForm, MemberForm, ConfigForm
-from .functions import get_timetables, get_time_label, get_timetables_with_pulp, get_time_label_per_hour, get_timetables_with_pulp_abnormal
+from .functions import get_time_label_list, get_timetables, get_timetables_with_pulp, get_timetables_with_pulp_abnormal
 
 import pandas as pd
 
@@ -95,19 +95,31 @@ class GenerateView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['bands'] = Band.objects.all()
-        context['time_labels'] = get_time_label()
-        context['time_labels_per_hour'] = get_time_label_per_hour()
+
+        time_label_list = get_time_label_list(0.5)
+
         session_start = int(Config.objects.get(key='session_start').value)
         session_end = int(Config.objects.get(key='session_end').value)
-        context['session_frames'] = range(session_start, session_end)
-        context['session_frames_per_hour'] = range(7, 10)
+        session_frames = [i for i in range(session_start, session_end)]
+
         room_start = int(Config.objects.get(key='room_start').value)
         room_end = int(Config.objects.get(key='room_end').value)    
-        context['room_frames'] = range(room_start, room_end)
-        context['room_frames_per_hour'] = range(0, 13)
+        room_frames = [i for i in range(room_start, room_end)]
+
         max_days = int(Config.objects.get(key='max_days').value)
+        
+        context['bands'] = Band.objects.all()
+        context['time_label_list'] = time_label_list
+        context['time_label_list_per_hour'] = time_label_list[::2]
+        context['time_label_list_per_one_half_hour'] = time_label_list[::3]
+        context['session_frames'] = session_frames
+        context['session_frames_per_hour'] = [i//2 for i in session_frames[::2]]
+        context['session_frames_per_one_half_hour'] = [i//3 for i in session_frames[::3]]
+        context['room_frames'] = room_frames
+        context['room_frames_per_hour'] = [i//2 for i in room_frames[::2]]
+        context['room_frames_per_one_half_hour'] = [i//3 for i in room_frames[::3]]
         context['days'] = range(1,max_days+1)
+
         return context
 
 # 生成結果画面
@@ -131,17 +143,17 @@ class ResultView(TemplateView):
 
         if method == "legacy":
             timetable_dict = get_timetables(data)
-            time_labels = get_time_label()
+            hour_per_frame = 0.5
         elif method == "pulp":
             timetable_dict = get_timetables_with_pulp(data)
-            time_labels = get_time_label_per_hour()
+            hour_per_frame = 1.0
         elif method == "ab-pulp":
             timetable_dict = get_timetables_with_pulp_abnormal(data)
-            time_labels = get_time_label()
+            hour_per_frame = 0.5
 
         context = {
             'timetable_dict': timetable_dict,
-            'time_labels': time_labels
+            'time_label_list': get_time_label_list(hour_per_frame)
         }
         return self.render_to_response(context)
 
