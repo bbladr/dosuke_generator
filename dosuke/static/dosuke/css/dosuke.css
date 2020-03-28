@@ -6,7 +6,7 @@ input[type=checkbox] {
   display: none;
 }
 
-.form-check-label {
+input[type=checkbox] + .form-check-label {
   box-sizing: border-box;
   position: relative;
   display: inline-block;
@@ -16,7 +16,8 @@ input[type=checkbox] {
   vertical-align: middle;
   cursor: pointer;
 }
-.form-check-label:after {
+
+input[type=checkbox] + .form-check-label:after {
   position: absolute;
   top: 50%;
   left: 0px;

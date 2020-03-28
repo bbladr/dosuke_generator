@@ -11,7 +11,7 @@ document.onmouseup = function() {
 };
 
 // クリックした状態でホバーしたら selected にする
-$('.form-check-label').mouseenter(function() {
+$('input[type=checkbox] + .form-check-label').mouseenter(function() {
   if (isClicked) {
     const forEle = $(this).attr('for');
     var isChecked = $(`#${forEle}`).prop('checked');
@@ -19,12 +19,12 @@ $('.form-check-label').mouseenter(function() {
   }
 });
 // チェックボックスをクリックした時の挙動
-$('.form-check-label').on('mousedown', function(e) {
+$('input[type=checkbox] + .form-check-label').on('mousedown', function(e) {
   const forEle = $(this).attr('for');
   var isChecked = $(`#${forEle}`).prop('checked');
   $(`#${forEle}`).prop('checked', (!isChecked) ? true : false);
 });
-$('.form-check-input').on('click', function(e) {
+$('input[type=checkbox].form-check-input').on('click', function(e) {
   e.preventDefault();
 });
 
@@ -42,12 +42,12 @@ $('.non-select-all').on('click', function(e) {
 
 // 一括選択
 $('.global-select-all').on('click', function(e) {
-  $(`.form-check-input`).prop('checked', true);
+  $(`input[type=checkbox].form-check-input`).prop('checked', true);
 })
 
 // 一括解除
 $('.global-non-select-all').on('click', function(e) {
-  $(`.form-check-input`).prop('checked', false);
+  $(`input[type=checkbox].form-check-input`).prop('checked', false);
 })
 
 // 土スケ生成待機中の表示

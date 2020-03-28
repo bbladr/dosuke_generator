@@ -6,6 +6,24 @@
       <h2>希望時間入力画面</h2>
       {% if bands %}
         <form action="result/" method="post">
+          <div class="form-group row mt-4">
+            <label class="col-2 col-form-label">メソッド:</label>
+            <button type="button" class="btn btn-secondary mb-2 mb-md-0" data-toggle="tooltip" data-placement="bottom" title="下に出るツールチップ">ツールチップ(下)</button>
+            <div class="col-4">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method-radio" id="method-radio-legacy" value="legacy" checked>
+                <label class="form-check-label" for="method-radio-legacy">Legacy</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method-radio" id="method-radio-pulp" value="pulp">
+                <label class="form-check-label" for="method-radio-pulp">Pulp</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="method-radio" id="method-radio-ab-pulp" value="ab-pulp">
+                <label class="form-check-label" for="method-radio-ab-pulp">Abnormal Pulp</label>
+              </div>
+            </div>
+          </div>
           <div class="row mb-2">
             <div class="col-10">
               <div class="float-left">

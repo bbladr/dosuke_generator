@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Band, Member, Config
 from .forms import BandForm, MemberForm, ConfigForm
-from .functions import get_timetables, get_time_label, get_timetables_with_pulp
+from .functions import get_timetables, get_time_label, get_timetables_with_pulp, get_timetables_abnormal
 
 import pandas as pd
 
@@ -119,6 +119,9 @@ class ResultView(TemplateView):
         for key in request.POST:
             if key == 'csrfmiddlewaretoken':
                 continue
+            elif key == 'method-radio':
+                method = request.POST['method-radio']
+                continue
 
             # アンダーバーを境目にバンド名とコマ番を取得
             band, day, time = key.split('_')
@@ -126,8 +129,14 @@ class ResultView(TemplateView):
 
         data = pd.DataFrame(data_list, columns=['band', 'day', 'hour'])
 
-        timetable_dict = get_timetables_with_pulp(data)
-        # timetable_dict = get_timetables(data)
+        if method == 'legacy':
+            timetable_dict = get_timetables(data)
+        elif method == 'pulp':
+            timetable_dict = get_timetables_with_pulp(data)
+        elif method == 'ab-pulp':
+            timetable_dict = get_timetables_abnormal(data)
+        else:
+            timetable_dict = get_timetables(data)
 
         context = {
             'timetable_dict': timetable_dict,
