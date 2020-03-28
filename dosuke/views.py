@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Band, Member, Config
 from .forms import BandForm, MemberForm, ConfigForm
-from .functions import get_timetables, get_time_label, get_timetables_with_pulp
+from .functions import get_timetables, get_time_label, get_timetables_with_pulp, get_timetables_with_pulp_abnormal
 
 import pandas as pd
 
@@ -114,20 +114,24 @@ class ResultView(TemplateView):
     def post(self, request, **kwargs):
         # まずは req から必要な値を抽出
         data_list = []
-
+        print(request.POST)
         # クエリ数が多すぎて DATA_UPLOAD_MAX_NUMBER_FIELDS を変更(../Dosuke_pro/settings.py)して許容してるので data を使うようにする
         for key in request.POST:
             if key == 'csrfmiddlewaretoken':
                 continue
 
             # アンダーバーを境目にバンド名とコマ番を取得
-            band, day, time = key.split('_')
+            band, day, time, method = key.split('_')
             data_list.append([band, int(day), int(time)])
 
         data = pd.DataFrame(data_list, columns=['band', 'day', 'hour'])
 
-        timetable_dict = get_timetables_with_pulp(data)
-        # timetable_dict = get_timetables(data)
+        if method == "legacy":
+            timetable_dict = get_timetables(data)
+        elif method == "pulp":
+            timetable_dict = get_timetables_with_pulp(data)
+        elif method == "ab-pulp":
+            timetable_dict = get_timetables_with_pulp_abnormal(data)
 
         context = {
             'timetable_dict': timetable_dict,
