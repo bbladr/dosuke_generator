@@ -148,7 +148,7 @@
                     日時
                   </div>
                   <div class="col-8 d-flex justify-content-between">
-                    {% with ''|center:14 as range %}
+                    {% with ''|center:13 as range %}
                       {% for _ in range %}
                         <div class="d-inline">{{ forloop.counter|add:"8" }}</div>
                       {% endfor %}
@@ -166,14 +166,14 @@
                       {{ day }}日目
                     </div>
                     <div class="col-8 d-flex justify-content-between">
-                      {% for _ in ''|center:27 %}
+                      {% for _ in ''|center:13 %}
                         <div class="form-check form-check-inline">
                           <input 
-                            class="form-check-input {{ band }}_{{ day }}_pulp pulp {% if forloop.counter0 in session_frames and forloop.counter0 in room_frames %} session_frame {% endif %}"
+                            class="form-check-input {{ band }}_{{ day }}_pulp pulp {% if forloop.counter0 in session_frames_per_hour and forloop.counter0 in room_frames_per_hour %} session_frame {% endif %}"
                             type="checkbox" 
                             id="{{ band }}_{{ day }}_{{ forloop.counter0 }}_pulp"
                             name="{{ band }}_{{ day }}_{{ forloop.counter0 }}_pulp"
-                            {% if forloop.counter0 in session_frames or not forloop.counter0 in room_frames %}
+                            {% if forloop.counter0 in session_frames_per_hour or not forloop.counter0 in room_frames %}
                               disabled
                             {% endif %}
                           >
