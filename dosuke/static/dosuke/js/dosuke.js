@@ -42,12 +42,14 @@ $('.non-select-all').on('click', function(e) {
 
 // 一括選択
 $('.global-select-all').on('click', function(e) {
-  $(`.form-check-input`).prop('checked', true);
+  const name = $(this).attr('name');
+  $(`.${name}`).prop('checked', true);
 })
 
 // 一括解除
 $('.global-non-select-all').on('click', function(e) {
-  $(`.form-check-input`).prop('checked', false);
+  const name = $(this).attr('name');
+  $(`.${name}`).prop('checked', false);
 })
 
 // 土スケ生成待機中の表示

@@ -5,96 +5,287 @@
     <div class="col-12">
       <h2>希望時間入力画面</h2>
       {% if bands %}
-        <form action="result/" method="post">
-          <div class="row mb-2">
-            <div class="col-10">
-              <div class="float-left">
-                <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
-              </div>
-              <div class="float-right">
-                <input 
-                  class="form-check-input sample_frame selected_frame"
-                  type="checkbox" 
-                  disabled
-                >
-                <label class="form-check-label"><span class="ml-4">: 希望中</span></label>
-                <input 
-                  class="form-check-input sample_frame session_frame"
-                  type="checkbox" 
-                  disabled
-                >
-                <label class="form-check-label"><span class="ml-4">: セッション</span></label>
-                <input 
-                  class="form-check-input sample_frame"
-                  type="checkbox" 
-                  disabled
-                >
-                <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
-              </div>
-            </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm global-select-all">一括選択</button>
-            </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all">一括解除</button>
-            </div>
-          </div>
-          {% csrf_token %}
-          {% for band in bands %}
-            <div class="row mt-4">
-              <div class="col-2 text-right">
-                日時
-              </div>
-              <div class="col-8 d-flex justify-content-between">
-                {% with ''|center:14 as range %}
-                  {% for _ in range %}
-                    <div class="d-inline">{{ forloop.counter|add:"8" }}</div>
-                  {% endfor %}
-                {% endwith %}
-              </div>
-            </div>
-            {% for day in days %}
+        <!-- タブ部分 -->
+        <ul id="methodSelectTab" class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a href="#legacy" id="legacy-tab" class="nav-link active" role="tab" data-toggle="tab" aria-controls="legacy" aria-selected="true">Legacy</a>
+          </li>
+          <li class="nav-item">
+            <a href="#pulp" id="pulp-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="pulp" aria-selected="false">Pulp</a>
+          </li>
+          <li class="nav-item">
+            <a href="#ab-pulp" id="ab-pulp-tab" class="nav-link" role="tab" data-toggle="tab" aria-controls="ab-pulp" aria-selected="false">Abnormal Pulp</a>
+          </li>
+        </ul>
+        <!-- パネル部分 -->
+        <div id="methodSelectTabContent" class="tab-content mt-3">
+          <div id="legacy" class="tab-pane active" role="tabpanel" aria-labelledby="legacy-tab">
+            <form action="result/" method="post">
               <div class="row mb-2">
-                <div class="col-1 text-right">
-                  {% if forloop.first %}
-                    {{ band }}
-                  {% endif %}
+                <div class="col-10">
+                  <div class="float-left">
+                    <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+                  </div>
+                  <div class="float-right">
+                    <input 
+                      class="form-check-input sample_frame selected_frame"
+                      type="checkbox" 
+                      disabled
+                    >
+                    <label class="form-check-label"><span class="ml-4">: 希望中</span></label>
+                    <input 
+                      class="form-check-input sample_frame session_frame"
+                      type="checkbox" 
+                      disabled
+                    >
+                    <label class="form-check-label"><span class="ml-4">: セッション</span></label>
+                    <input 
+                      class="form-check-input sample_frame"
+                      type="checkbox" 
+                      disabled
+                    >
+                    <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
+                  </div>
                 </div>
-                <div class="col-1 text-right">
-                  {{ day }}日目
+                <div class="col-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm global-select-all" name="legacy">一括選択</button>
                 </div>
-                <div class="col-8 d-flex justify-content-between">
-                  {% for _ in ''|center:27 %}
-                    <div class="form-check form-check-inline">
+                <div class="col-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all" name="legacy">一括解除</button>
+                </div>
+              </div>
+              {% csrf_token %}
+              {% for band in bands %}
+                <div class="row mt-4">
+                  <div class="col-2 text-right">
+                    日時
+                  </div>
+                  <div class="col-8 d-flex justify-content-between">
+                    {% with ''|center:14 as range %}
+                      {% for _ in range %}
+                        <div class="d-inline">{{ forloop.counter|add:"8" }}</div>
+                      {% endfor %}
+                    {% endwith %}
+                  </div>
+                </div>
+                {% for day in days %}
+                  <div class="row mb-2">
+                    <div class="col-1 text-right">
+                      {% if forloop.first %}
+                        {{ band }}
+                      {% endif %}
+                    </div>
+                    <div class="col-1 text-right">
+                      {{ day }}日目
+                    </div>
+                    <div class="col-8 d-flex justify-content-between">
+                      {% for _ in ''|center:27 %}
+                        <div class="form-check form-check-inline">
+                          <input 
+                            class="form-check-input {{ band }}_{{ day }}_legacy legacy {% if forloop.counter0 in session_frames and forloop.counter0 in room_frames %} session_frame {% endif %}"
+                            type="checkbox" 
+                            id="{{ band }}_{{ day }}_{{ forloop.counter0 }}_legacy"
+                            name="{{ band }}_{{ day }}_{{ forloop.counter0 }}_legacy"
+                            {% if forloop.counter0 in session_frames or not forloop.counter0 in room_frames %}
+                              disabled
+                            {% endif %}
+                          >
+                          <label class="form-check-label {{ band }}_{{ day }}_legacy legacy" for="{{ band }}_{{ day }}_{{ forloop.counter0 }}_legacy"></label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}_{{ day }}_legacy">全選択</button>
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}_{{ day }}_legacy">全解除</button>
+                    </div>
+                  </div>
+                {% endfor %}
+              {% endfor %}
+              <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+            </form>
+          </div>
+          <div id="pulp" class="tab-pane" role="tabpanel" aria-labelledby="pulp-tab">
+            <form action="result/" method="post">
+              <div class="row mb-2">
+                <div class="col-10">
+                  <div class="float-left">
+                    <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+                  </div>
+                  <div class="float-right">
+                    <input 
+                      class="form-check-input sample_frame selected_frame"
+                      type="checkbox" 
+                      disabled
+                    >
+                    <label class="form-check-label"><span class="ml-4">: 希望中</span></label>
+                    <input 
+                      class="form-check-input sample_frame session_frame"
+                      type="checkbox" 
+                      disabled
+                    >
+                    <label class="form-check-label"><span class="ml-4">: セッション</span></label>
+                    <input 
+                      class="form-check-input sample_frame"
+                      type="checkbox" 
+                      disabled
+                    >
+                    <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
+                  </div>
+                </div>
+                <div class="col-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm global-select-all" name="pulp">一括選択</button>
+                </div>
+                <div class="col-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all" name="pulp">一括解除</button>
+                </div>
+              </div>
+              {% csrf_token %}
+              {% for band in bands %}
+                <div class="row mt-4">
+                  <div class="col-2 text-right">
+                    日時
+                  </div>
+                  <div class="col-8 d-flex justify-content-between">
+                    {% with ''|center:14 as range %}
+                      {% for _ in range %}
+                        <div class="d-inline">{{ forloop.counter|add:"8" }}</div>
+                      {% endfor %}
+                    {% endwith %}
+                  </div>
+                </div>
+                {% for day in days %}
+                  <div class="row mb-2">
+                    <div class="col-1 text-right">
+                      {% if forloop.first %}
+                        {{ band }}
+                      {% endif %}
+                    </div>
+                    <div class="col-1 text-right">
+                      {{ day }}日目
+                    </div>
+                    <div class="col-8 d-flex justify-content-between">
+                      {% for _ in ''|center:27 %}
+                        <div class="form-check form-check-inline">
+                          <input 
+                            class="form-check-input {{ band }}_{{ day }}_pulp pulp {% if forloop.counter0 in session_frames and forloop.counter0 in room_frames %} session_frame {% endif %}"
+                            type="checkbox" 
+                            id="{{ band }}_{{ day }}_{{ forloop.counter0 }}_pulp"
+                            name="{{ band }}_{{ day }}_{{ forloop.counter0 }}_pulp"
+                            {% if forloop.counter0 in session_frames or not forloop.counter0 in room_frames %}
+                              disabled
+                            {% endif %}
+                          >
+                          <label class="form-check-label {{ band }}_{{ day }}_pulp pulp" for="{{ band }}_{{ day }}_{{ forloop.counter0 }}_pulp"></label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}_{{ day }}_pulp">全選択</button>
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}_{{ day }}_pulp">全解除</button>
+                    </div>
+                  </div>
+                {% endfor %}
+              {% endfor %}
+              <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+            </form>
+          </div>
+          <div id="ab-pulp" class="tab-pane" role="tabpanel" aria-labelledby="ab-pulp-tab">
+            <form action="result/" method="post">
+                <div class="row mb-2">
+                  <div class="col-10">
+                    <div class="float-left">
+                      <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+                    </div>
+                    <div class="float-right">
                       <input 
-                        class="form-check-input {{ band }}_{{ day }} {% if forloop.counter0 in session_frames and forloop.counter0 in room_frames %} session_frame {% endif %}"
+                        class="form-check-input sample_frame selected_frame"
                         type="checkbox" 
-                        id="{{ band }}_{{ day }}_{{ forloop.counter0 }}"
-                        name="{{ band }}_{{ day }}_{{ forloop.counter0 }}"
-                        {% if forloop.counter0 in session_frames or not forloop.counter0 in room_frames %}
-                          disabled
-                        {% endif %}
+                        disabled
                       >
-                      <label class="form-check-label {{ band }}_{{ day }}" for="{{ band }}_{{ day }}_{{ forloop.counter0 }}"></label>
+                      <label class="form-check-label"><span class="ml-4">: 希望中</span></label>
+                      <input 
+                        class="form-check-input sample_frame session_frame"
+                        type="checkbox" 
+                        disabled
+                      >
+                      <label class="form-check-label"><span class="ml-4">: セッション</span></label>
+                      <input 
+                        class="form-check-input sample_frame"
+                        type="checkbox" 
+                        disabled
+                      >
+                      <label class="form-check-label"><span class="ml-4">: 防音室利用不可</span></label>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <button type="button" class="btn btn-outline-secondary btn-sm global-select-all" name="ab_pulp">一括選択</button>
+                  </div>
+                  <div class="col-1">
+                    <button type="button" class="btn btn-outline-secondary btn-sm global-non-select-all" name="ab_pulp">一括解除</button>
+                  </div>
+                </div>
+                {% csrf_token %}
+                {% for band in bands %}
+                  <div class="row mt-4">
+                    <div class="col-2 text-right">
+                      日時
+                    </div>
+                    <div class="col-8 d-flex justify-content-between">
+                      {% with ''|center:14 as range %}
+                        {% for _ in range %}
+                          <div class="d-inline">{{ forloop.counter|add:"8" }}</div>
+                        {% endfor %}
+                      {% endwith %}
+                    </div>
+                  </div>
+                  {% for day in days %}
+                    <div class="row mb-2">
+                      <div class="col-1 text-right">
+                        {% if forloop.first %}
+                          {{ band }}
+                        {% endif %}
+                      </div>
+                      <div class="col-1 text-right">
+                        {{ day }}日目
+                      </div>
+                      <div class="col-8 d-flex justify-content-between">
+                        {% for _ in ''|center:27 %}
+                          <div class="form-check form-check-inline">
+                            <input 
+                              class="form-check-input {{ band }}_{{ day }}_ab_pulp ab_pulp {% if forloop.counter0 in session_frames and forloop.counter0 in room_frames %} session_frame {% endif %}"
+                              type="checkbox" 
+                              id="{{ band }}_{{ day }}_{{ forloop.counter0 }}_ab_pulp"
+                              name="{{ band }}_{{ day }}_{{ forloop.counter0 }}_ab_pulp"
+                              {% if forloop.counter0 in session_frames or not forloop.counter0 in room_frames %}
+                                disabled
+                              {% endif %}
+                            >
+                            <label class="form-check-label {{ band }}_{{ day }}_ab_pulp ab_pulp" for="{{ band }}_{{ day }}_{{ forloop.counter0 }}_ab_pulp"></label>
+                          </div>
+                        {% endfor %}
+                      </div>
+                      <div class="col-1">
+                        <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}_{{ day }}_ab_pulp">全選択</button>
+                      </div>
+                      <div class="col-1">
+                        <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}_{{ day }}_ab_pulp">全解除</button>
+                      </div>
                     </div>
                   {% endfor %}
-                </div>
-                <div class="col-1">
-                  <button type="button" class="btn btn-outline-secondary btn-sm select-all" name="{{ band }}_{{ day }}">全選択</button>
-                </div>
-                <div class="col-1">
-                  <button type="button" class="btn btn-outline-secondary btn-sm non-select-all" name="{{ band }}_{{ day }}">全解除</button>
-                </div>
-              </div>
-            {% endfor %}
-          {% endfor %}
-          <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
-        </form>
-      {% else %}
-        <div>
-          <a class="text-dark" href="{% url 'band_create' %}">バンドを追加してください</a>
+                {% endfor %}
+                <input type="submit" class="btn btn-outline-secondary mt-2 btn-generate" value="土スケを生成">
+            </form>
+          </div>
         </div>
-      {% endif %}
+      {% else %}
+      <div>
+        <a class="text-dark" href="{% url 'band_create' %}">バンドを追加してください</a>
+      </div>
+    {% endif %}
     </div>
   </div>
 </div>
