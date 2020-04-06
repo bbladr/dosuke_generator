@@ -307,24 +307,38 @@ def get_timetables_with_pulp(data):
     for b in data['band'].unique():
         for d in data['day'].unique():
             for h in [i for i in reversed(range(room_start, session_start))][::2]:
-                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h-1))]) >= 2:
-                    data_list_per2.append(data[(data['band']==b)&(data['day'])&(data['hour']==h-1)])
+                if len(data[(data['band']==b)&(data['day']==d)&((data['hour']==h)|(data['hour']==h-1))]) >= 2:
+                    data_list_per2.append(data[(data['band']==b)&(data['day']==d)&(data['hour']==h-1)])
 
             for h in range(session_end, room_end, 2):
-                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h+1))]) >= 2:
-                    data_list_per2.append(data[(data['band']==b)&(data['day'])&(data['hour']==h)])
+                if len(data[(data['band']==b)&(data['day']==d)&((data['hour']==h)|(data['hour']==h+1))]) >= 2:
+                    data_list_per2.append(data[(data['band']==b)&(data['day']==d)&(data['hour']==h)])
 
             for h in [i for i in reversed(range(room_start, session_start))][::3]:
-                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h-1)|(data['hour']==h-2))]) >= 3:
-                    data_list_per3.append(data[(data['band']==b)&(data['day'])&(data['hour']==h-2)])
+                if len(data[(data['band']==b)&(data['day']==d)&((data['hour']==h)|(data['hour']==h-1)|(data['hour']==h-2))]) >= 3:
+                    data_list_per3.append(data[(data['band']==b)&(data['day']==d)&(data['hour']==h-2)])
 
             for h in range(session_end, room_end, 3):
-                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h+1)|(data['hour']==h+2))]) >= 3:
-                    data_list_per3.append(data[(data['band']==b)&(data['day'])&(data['hour']==h)])
+                if len(data[(data['band']==b)&(data['day']==d)&((data['hour']==h)|(data['hour']==h+1)|(data['hour']==h+2))]) >= 3:
+                    data_list_per3.append(data[(data['band']==b)&(data['day']==d)&(data['hour']==h)])
 
     data_per2 = pd.concat(data_list_per2)
     data_per3 = pd.concat(data_list_per3)
 
+    twoOrThrees = [False, True, True, False, True, False, True, True, False, True]
+    mixed_deta = pd.concat([
+        (
+            data_per2[(data_per2['day']==i+1)&(data_per2['hour']<session_start)]
+            if twoOrThrees[i] 
+            else data_per3[(data_per3['day']==i+1)&(data_per3['hour']<session_start)] 
+        ) if i <=4 else
+        (
+            data_per2[(data_per2['day']==i-4)&(data_per2['hour']>=session_end)] 
+            if twoOrThrees[i] 
+            else data_per3[(data_per3['day']==i-4)&(data_per3['hour']>=session_end)] 
+        )
+        for i in range(10)
+    ])
 
     df = pd.DataFrame([
         (i # day
@@ -333,8 +347,8 @@ def get_timetables_with_pulp(data):
         ,(16-0.01*abs(j-16))*(0.01*l) # rank = 練習時間帯価値 * バンドメンバーの学年総和
         ,pulp.LpVariable(f'Var_{i}_{j}_{k}', cat=pulp.LpBinary) # pulp 用変数 Var_i_j_k
         )
-        for i in data_per2['day'].unique()
-        for j in data_per2['hour'].unique()
+        for i in mixed_deta['day'].unique()
+        for j in mixed_deta['hour'].unique()
         for k, l in zip(bands.band, bands.grade_sum)
     ], columns=['day', 'hour', 'band', 'rank', 'Var'])
     dff = df.drop(columns=['rank','Var'])
@@ -359,7 +373,7 @@ def get_timetables_with_pulp(data):
         model += pulp.lpSum(group.Var)<=1
     for key, group in df.groupby(['day', 'hour', 'band']):
         # 希望時間にそうようにする
-        if len(data_per2[(data_per2.day==key[0])&(data_per2.hour==key[1])&(data_per2.band==key[2])]) == 0:
+        if len(mixed_deta[(mixed_deta.day==key[0])&(mixed_deta.hour==key[1])&(mixed_deta.band==key[2])]) == 0:
             model += lpSum(group.Var) == 0
         else:
             model += lpSum(group.Var) <= 1
@@ -387,9 +401,7 @@ def get_timetables_with_pulp(data):
         timetable[session_start:session_end] = ['セッション']*len(session_frames) # セッション枠
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
-            band_name = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
-            timetable[hour] = band_name # バンドIDからバンドモデルを取り出し、表に反映
-            timetable[hour+1] = band_name # バンドIDからバンドモデルを取り出し、表に反映
+            timetable[hour] = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
         timetable_dict[day] = timetable # 1日分の表を追加
     return timetable_dict
 
