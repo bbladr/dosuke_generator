@@ -400,9 +400,19 @@ def get_timetables_with_pulp(data):
         timetable = timetable_base.copy()
         timetable[session_start:session_end] = ['セッション']*len(session_frames) # セッション枠
         for hour in result[result['day'] == day]['hour']:
-            band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
-            timetable[hour] = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
+                band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
+                if hour < session_start:
+                    if twoOrThrees[day-1]:
+                        timetable[hour:hour+2] = [Band.objects.get(id=band_pk)]*2 # バンドIDからバンドモデルを取り出し、表に反映
+                    else:
+                        timetable[hour:hour+3] = [Band.objects.get(id=band_pk)]*3 # バンドIDからバンドモデルを取り出し、表に反映
+                elif hour >= session_end:
+                    if twoOrThrees[day+2]:
+                        timetable[hour:hour+2] = [Band.objects.get(id=band_pk)]*2 # バンドIDからバンドモデルを取り出し、表に反映
+                    else:
+                        timetable[hour:hour+3] = [Band.objects.get(id=band_pk)]*3 # バンドIDからバンドモデルを取り出し、表に反映
         timetable_dict[day] = timetable # 1日分の表を追加
+        
     return timetable_dict
 
 
