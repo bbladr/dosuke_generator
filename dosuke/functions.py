@@ -276,6 +276,7 @@ def get_timetables_with_pulp(data):
         band = Band.objects.get(name=band_name)
         data['band'][data['name'] == band_name] = band.pk
 
+    # 結果格納用
     timetable_dict = {}
 
     # 学年算出用に現在の年度を算出
@@ -296,6 +297,35 @@ def get_timetables_with_pulp(data):
 
     bands = pd.DataFrame(band_list, columns=['band','grade_sum','name'])
 
+    # 各バンドが練習できる時間は 1h or 1.5h に固定される
+    # セッション前後で分けて計算する
+    # 各バンドの希望時間を 2コマ(1h)ごと、3コマ(1.5h)ごと用に変換
+
+    data_list_per2 = []
+    data_list_per3 = []
+
+    for b in data['band'].unique():
+        for d in data['day'].unique():
+            for h in [i for i in reversed(range(room_start, session_start))][::2]:
+                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h-1))]) >= 2:
+                    data_list_per2.append(data[(data['band']==b)&(data['day'])&(data['hour']==h-1)])
+
+            for h in range(session_end, room_end, 2):
+                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h+1))]) >= 2:
+                    data_list_per2.append(data[(data['band']==b)&(data['day'])&(data['hour']==h)])
+
+            for h in [i for i in reversed(range(room_start, session_start))][::3]:
+                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h-1)|(data['hour']==h-2))]) >= 3:
+                    data_list_per3.append(data[(data['band']==b)&(data['day'])&(data['hour']==h-2)])
+
+            for h in range(session_end, room_end, 3):
+                if len(data[(data['band']==b)&(data['day'])&((data['hour']==h)|(data['hour']==h+1)|(data['hour']==h+2))]) >= 3:
+                    data_list_per3.append(data[(data['band']==b)&(data['day'])&(data['hour']==h)])
+
+    data_per2 = pd.concat(data_list_per2)
+    data_per3 = pd.concat(data_list_per3)
+
+
     df = pd.DataFrame([
         (i # day
         ,j # hour
@@ -303,8 +333,8 @@ def get_timetables_with_pulp(data):
         ,(16-0.01*abs(j-16))*(0.01*l) # rank = 練習時間帯価値 * バンドメンバーの学年総和
         ,pulp.LpVariable(f'Var_{i}_{j}_{k}', cat=pulp.LpBinary) # pulp 用変数 Var_i_j_k
         )
-        for i in data['day'].unique()
-        for j in data['hour'].unique()
+        for i in data_per2['day'].unique()
+        for j in data_per2['hour'].unique()
         for k, l in zip(bands.band, bands.grade_sum)
     ], columns=['day', 'hour', 'band', 'rank', 'Var'])
     dff = df.drop(columns=['rank','Var'])
@@ -326,33 +356,13 @@ def get_timetables_with_pulp(data):
         model += pulp.lpSum(group.Var)<=1
     # 1バンドが1日に練習していいのは1.5hまで
     for key, group in df.groupby(['day', 'band']):
-        model += pulp.lpSum(group.Var)<=3
+        model += pulp.lpSum(group.Var)<=1
     for key, group in df.groupby(['day', 'hour', 'band']):
         # 希望時間にそうようにする
-        if len(data[(data.day==key[0])&(data.hour==key[1])&(data.band==key[2])]) == 0:
+        if len(data_per2[(data_per2.day==key[0])&(data_per2.hour==key[1])&(data_per2.band==key[2])]) == 0:
             model += lpSum(group.Var) == 0
         else:
             model += lpSum(group.Var) <= 1
-
-        # 連続した時間をとるようにする
-        # あるバンドのある日のある時間に対し、その枠をとってたら前後の枠のどちらかがとってあるようにする
-        d, h, b = key
-        # 前の枠をとってるかどうか(0 or 1)（前の枠が存在しない場合は0）
-        if len(df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)]) == 0:
-            x0 = 0
-        else:
-            x0 = df[(df['hour']==h-1) & (df['day']==d) & (df['band']==b)].Var.iloc[0] 
-        # その枠をとってるかどうか(0 or 1)
-        x1 = df[(df['hour']==h) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
-        # 次の枠をとってるかどうか(0 or 1)（次の枠が存在しない場合は0）
-        if len(df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)]) == 0:
-            x2 = 0
-        else:
-            x2 = df[(df['hour']==h+1) & (df['day']==d) & (df['band']==b)].Var.iloc[0]
-        # 前の枠 + 次の枠 - その枠 >= 0
-        # -> その枠が 0 の場合、前後の枠がなんであろうと満たされる
-        # -> その枠が 1 の場合、前後の枠の少なくともひとつが 1 である必要がある
-        model += x0 + x2 - x1 >= 0
 
     start = time.time()
     solver_thread_num = int(Config.objects.get(key='solver_thread_num').value)
@@ -377,7 +387,9 @@ def get_timetables_with_pulp(data):
         timetable[session_start:session_end] = ['セッション']*len(session_frames) # セッション枠
         for hour in result[result['day'] == day]['hour']:
             band_pk = result[(result['day'] == day) & (result['hour'] == hour)]['band'] # バンドIDを取得
-            timetable[hour] = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
+            band_name = Band.objects.get(id=band_pk) # バンドIDからバンドモデルを取り出し、表に反映
+            timetable[hour] = band_name # バンドIDからバンドモデルを取り出し、表に反映
+            timetable[hour+1] = band_name # バンドIDからバンドモデルを取り出し、表に反映
         timetable_dict[day] = timetable # 1日分の表を追加
     return timetable_dict
 
