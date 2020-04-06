@@ -115,7 +115,7 @@ class ResultView(TemplateView):
         # まずは req から必要な値を抽出
         data_list = []
 
-        # クエリ数が多すぎて DATA_UPLOAD_MAX_NUMBER_FIELDS を変更(../Dosuke_pro/settings.py)して許容してるので data を使うようにする
+        # [TODO] クエリ数が多すぎて DATA_UPLOAD_MAX_NUMBER_FIELDS を変更(../Dosuke_pro/settings.py)して許容してるので data を使うようにする
         for key in request.POST:
             if key == 'csrfmiddlewaretoken':
                 continue
