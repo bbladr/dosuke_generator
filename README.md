@@ -9,7 +9,7 @@
 - 所属歴による優遇やスタジオまでの距離が遠い人は昼間にするなどを考慮したい
 
 ## How to Start (for Mac)
-### Require
+### Required
 - git
 - python3
 - pip3
